@@ -1,22 +1,30 @@
 Lightning BOLT11 utils
 ======================
 
-[![travis-badge]][travis]
+[![github-tests-badge]][github-tests]
+[![github-mypy-badge]][github-mypy]
 [![codecov-badge]][codecov]
 [![pypi-badge]][pypi]
-[![pypi-versions]][pypi]
+[![pypi-versions-badge]][pypi]
 [![license-badge]](LICENSE)
 
-This is an implementation of Lightning BOLT11 Specification, based on [Rusty Russell's work][rusty]
-and packaged as a standalone library that can be used by other projects. 
 
-[travis]: https://travis-ci.com/python-ln/bolt11?branch=master
-[travis-badge]: https://api.travis-ci.com/python-ln/bolt11.svg?branch=master
-[codecov]: https://codecov.io/gh/python-ln/bolt11
-[codecov-badge]: https://codecov.io/gh/python-ln/bolt11/branch/master/graph/badge.svg
+This is an implementation of the Lightning BOLT11 specification,
+based on previous work by [Rusty Russell][rusty], the [Electrum Wallet team][electrum],
+and the LNbits bolt11 helpers created by [@fiatjaf][fiatjaf]. 
+
+
+[github-tests]: https://github.com/lnbits/bolt11/actions?query=workflow%3A%22tests%22
+[github-tests-badge]: https://github.com/lnbits/bolt11/workflows/tests/badge.svg
+[github-mypy]: https://github.com/lnbits/bolt11/actions?query=workflow%3A%22mypy%22
+[github-mypy-badge]: https://github.com/lnbits/bolt11/workflows/mypy/badge.svg
+[codecov]: https://codecov.io/gh/lnbits/bolt11
+[codecov-badge]: https://codecov.io/gh/lnbits/bolt11/branch/master/graph/badge.svg
 [pypi]: https://pypi.org/project/bolt11/
 [pypi-badge]: https://badge.fury.io/py/bolt11.svg
-[pypi-versions]: https://img.shields.io/pypi/pyversions/bolt11.svg
+[pypi-versions-badge]: https://img.shields.io/pypi/pyversions/bolt11.svg
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 
+[electrum]: https://github.com/spesmilo/electrum
+[fiatjaf]: https://github.com/fiatjaf
 [rusty]: https://github.com/rustyrussell/lightning-payencode
