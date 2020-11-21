@@ -14,6 +14,7 @@ class LightningInvoice(NamedTuple):
     signature: "Signature"
     tags: Dict[str, Any]
     timestamp: int
+    expiry: int
     amount: Optional["MilliSatoshi"] = None
     route_hints: List["Route"] = []
 
