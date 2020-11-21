@@ -162,5 +162,6 @@ def decode(bech32_pr: str) -> LightningInvoice:
         payee_public_key=payee_public_key,
         route_hints=route_hints,
         signature=signature,
+        expiry=tags["x"],
         tags=tags,
     )
