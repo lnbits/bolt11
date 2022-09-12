@@ -55,6 +55,12 @@ class LightningInvoice(NamedTuple):
     def is_mainnet(self) -> bool:
         return self.currency == "bc"
 
+    def is_testnet(self) -> bool:
+        return self.currency == "tb"
+
+    def is_regtest(self) -> bool:
+        return self.currency == "bcrt"
+
 
 class MilliSatoshi(int):
     """A thousandth of a satoshi."""

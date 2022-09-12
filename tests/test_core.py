@@ -120,3 +120,25 @@ class TestDecode:
         assert route.base_fee == 2
         assert route.ppm_fee == 30
         assert route.cltv_expiry_delta == 4
+
+    def test_testnet_invoice(self):
+        payment_request = "lntb100u1p33ag6wpp57j334hcez9w0frtfh5wke43rf8vg9t5r96r6xaprvyax4jfrkd0sdqqcqzpgxqyz5vqsp5wur5sldjky8xn4wzphw6qjavyk7dgxy6rn6jkv3nyvsj3pnlll8q9qyyssqhcajgmyuwvzwylzghl0tep0p4axafjme5jdw8zjfnwm2r94atnhzjhys58t4agnml5x54zrfnqn8nxc6mgg466sh58vnpgs6j7rfjvcpplp0cq"
+
+        invoice = decode(payment_request)
+        assert invoice.is_testnet()
+        assert invoice.timestamp == 1662952270
+        assert invoice.expiry_time == 86400
+        assert invoice.payment_hash == "f4a31adf19115cf48d69bd1d6cd62349d882ae832e87a37423613a6ac923b35f"
+        assert invoice.amount == 10000_000
+        assert invoice.payee_public_key == "020ec0c6a0c4fe5d8a79928ead294c36234a76f6e0dca896c35413612a3fd8dbf8"
+
+    def test_regtest_invoice(self):
+        payment_request = "lnbcrt10u1p33a84npp55l3pn5yujm4kry6xt99xkjmlzlgptw7afu6vzfehpg4zr4y2wmasdqqcqzpgxqyz5vqsp5tqnlapkc9afvhvu7l64sj2979n7jc5xwjt6x8gl45ccls9aqrm9s9qyyssq3eneyw5nch4fvwhqhy50vd3snpdxh2j8pmqnlqsmee27m7ehj4z9vf2s4welzz5n6pwferkweygk2sj4j7cttmnqe9m2pamcm26gkzgqt6uu8c"
+
+        invoice = decode(payment_request)
+        assert invoice.is_regtest()
+        assert invoice.timestamp == 1662951091
+        assert invoice.expiry_time == 86400
+        assert invoice.payment_hash == "a7e219d09c96eb619346594a6b4b7f17d015bbdd4f34c127370a2a21d48a76fb"
+        assert invoice.amount == 1000_000
+        assert invoice.payee_public_key == "0229540ad2deab56aa506b0e4b649dea58b23eafc15048e6f63ba899a11266afb9"
