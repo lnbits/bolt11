@@ -58,7 +58,7 @@ def decode(bech32_pr: str) -> LightningInvoice:
     if not hrp or not bech32_data or not hrp.startswith("ln"):
         raise ValueError("Bech32 is not valid.")
 
-    matches = re.match(r"ln(bc|bcrt|tb)(\w+)?", hrp)
+    matches = re.match(r"ln(bcrt|bc|tb)(\w+)?", hrp)
     assert matches, "Human readable part is not valid."
 
     currency, amount_str = matches.groups()
