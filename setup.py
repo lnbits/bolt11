@@ -1,6 +1,6 @@
 from os import path
-from setuptools import setup
 
+from setuptools import setup
 
 with open(path.join(path.abspath(path.dirname(__file__)), "README.md")) as f:
     long_description = f.read()

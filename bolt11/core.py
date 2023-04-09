@@ -1,16 +1,15 @@
-import base58  # type: ignore
 import re
-
-from bech32 import bech32_encode, bech32_decode, CHARSET  # type: ignore
 from binascii import unhexlify
+from hashlib import sha256
+
+import base58  # type: ignore
+from bech32 import CHARSET, bech32_decode, bech32_encode  # type: ignore
 from bitstring import ConstBitStream  # type: ignore
 from ecdsa import SECP256k1, VerifyingKey  # type: ignore
 from ecdsa.util import sigdecode_string  # type: ignore
-from hashlib import sha256
 
 from .types import LightningInvoice, MilliSatoshi, Route, Signature
-from .utils import amount_to_msat, trim_to_bytes, bitarray_to_u5, u5_to_bitarray
-
+from .utils import amount_to_msat, bitarray_to_u5, trim_to_bytes, u5_to_bitarray
 
 base58_prefix_map = {"bc": (0, 5), "tb": (111, 196)}
 

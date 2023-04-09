@@ -1,8 +1,8 @@
-import bitstring  # type: ignore
 import re
-
 from decimal import Decimal
 from typing import Union
+
+import bitstring
 
 from .types import MilliSatoshi
 
@@ -13,7 +13,7 @@ def amount_to_msat(amount: str) -> MilliSatoshi:
         raise ValueError(f"Invalid amount `{amount}`")
 
     try:
-        num = {"p": 10 ** 12, "n": 10 ** 9, "u": 10 ** 6, "m": 10 ** 3}[amount[-1]]
+        num = {"p": 10**12, "n": 10**9, "u": 10**6, "m": 10**3}[amount[-1]]
         return MilliSatoshi.from_btc(Decimal(amount[:-1]) / num)
     except KeyError:
         return MilliSatoshi.from_btc(Decimal(amount))
@@ -36,6 +36,7 @@ def msat_to_amount(msat: int) -> str:
 
     value = msat * 10
 
+    unit = ""
     for unit in ["p", "n", "u", "m", ""]:
         if value % 1000 == 0:
             value //= 1000

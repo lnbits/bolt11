@@ -1,6 +1,6 @@
-import pytest
-
 from decimal import Decimal
+
+import pytest
 
 from bolt11.compat import shorten_amount, unshorten_amount
 from bolt11.utils import amount_to_btc, amount_to_sat, btc_to_amount, sat_to_amount
@@ -10,10 +10,10 @@ class TestAmounts:
     @pytest.mark.parametrize(
         "btc, amount",
         [
-            (Decimal(10) / 10 ** 12, "10p"),
-            (Decimal(1000) / 10 ** 12, "1n"),
-            (Decimal(1200) / 10 ** 12, "1200p"),
-            (Decimal(123) / 10 ** 6, "123u"),
+            (Decimal(10) / 10**12, "10p"),
+            (Decimal(1000) / 10**12, "1n"),
+            (Decimal(1200) / 10**12, "1200p"),
+            (Decimal(123) / 10**6, "123u"),
             (Decimal(123) / 1000, "123m"),
             (3, "3"),
         ],

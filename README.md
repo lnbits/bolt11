@@ -11,7 +11,7 @@ Lightning BOLT11 utils
 
 This is an implementation of the Lightning BOLT11 specification,
 based on previous work by [Rusty Russell][rusty], the [Electrum Wallet team][electrum],
-and the LNbits bolt11 helpers created by [@fiatjaf][fiatjaf]. 
+and the LNbits bolt11 helpers created by [@fiatjaf][fiatjaf].
 
 
 [github-tests]: https://github.com/lnbits/bolt11/actions?query=workflow%3A%22tests%22
@@ -28,3 +28,34 @@ and the LNbits bolt11 helpers created by [@fiatjaf][fiatjaf].
 [electrum]: https://github.com/spesmilo/electrum
 [fiatjaf]: https://github.com/fiatjaf
 [rusty]: https://github.com/rustyrussell/lightning-payencode
+
+
+### resources
+* [Bolt11 Spec](https://github.com/lightning/bolts/blob/master/11-payment-encoding.md )
+* [bolt11.org](https://www.bolt11.org/)
+* [lightningdecoder](https://lightningdecoder.com/)
+
+
+### installing
+```console
+git clone https://github.com/lnbits/bolt11
+cd bolt11
+poetry install
+```
+
+### running CLI
+```console
+poetry run bolt11 --help
+poetry run bolt11 decode
+poetry run bolt11 encode
+```
+
+### run all checks and tests
+```console
+make
+```
+
+### using pre-commit as git hook
+```console
+poetry run pre-commit install
+```

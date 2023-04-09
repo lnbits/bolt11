@@ -1,8 +1,12 @@
-name: tests
-on: [push, pull_request]
+name: formatting
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  tests:
+  checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,7 +23,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
-      - name: Install dependencies
+      - name: Install packages
         run: poetry install
-      - name: Run tests
-        run: make test
+      - name: Check black
+        run: make black
+      - name: Check isort
+        run: make isort
