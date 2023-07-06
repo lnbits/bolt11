@@ -2,8 +2,21 @@ from decimal import Decimal
 
 import pytest
 
+from bolt11.bit_utils import int_to_scid, scid_to_int
 from bolt11.compat import shorten_amount, unshorten_amount
 from bolt11.utils import amount_to_btc, amount_to_sat, btc_to_amount, sat_to_amount
+
+
+class TestScid:
+    @pytest.mark.parametrize(
+        "scid, cid",
+        [
+            ("589390x3312x1", 648041158511951873),
+        ],
+    )
+    def test_scid(self, scid, cid):
+        assert int_to_scid(cid) == scid
+        assert scid_to_int(scid) == cid
 
 
 class TestAmounts:

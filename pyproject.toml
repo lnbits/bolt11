@@ -15,8 +15,9 @@ readme = "README.md"
 python = "^3.8.1"
 base58 = "^2.1.1"
 bech32 = "^1.2.0"
-bitstring = "^4.0.1"
+bitstring = "^4.0.2"
 ecdsa = "^0.18.0"
+secp256k1 = "^0.14.0"
 
 
 [tool.poetry.group.dev.dependencies]

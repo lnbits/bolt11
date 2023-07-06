@@ -1,19 +1,27 @@
-import re
 from decimal import Decimal
+from re import fullmatch
 from typing import Union
-
-import bitstring
 
 from .types import MilliSatoshi
 
 
 def amount_to_msat(amount: str) -> MilliSatoshi:
     """Given a shortened amount, convert it into millisatoshis."""
-    if not re.fullmatch(r"\d+[pnum]?", amount):
+    # BOLT #11:
+    # A reader SHOULD fail if `amount` contains a non-digit, or is followed by
+    # anything except a `multiplier` in the table above.
+    if not fullmatch(r"\d+[pnum]?", amount):
         raise ValueError(f"Invalid amount `{amount}`")
 
     try:
         num = {"p": 10**12, "n": 10**9, "u": 10**6, "m": 10**3}[amount[-1]]
+        # BOLT #11:
+        # The following `multiplier` letters are defined:
+        #
+        # * `m` (milli): multiply by 0.001
+        # * `u` (micro): multiply by 0.000001
+        # * `n` (nano): multiply by 0.000000001
+        # * `p` (pico): multiply by 0.000000000001
         return MilliSatoshi.from_btc(Decimal(amount[:-1]) / num)
     except KeyError:
         return MilliSatoshi.from_btc(Decimal(amount))
@@ -54,28 +62,3 @@ def sat_to_amount(sat: int) -> str:
 def btc_to_amount(btc: Union[int, Decimal]) -> str:
     """Given an amount in bitcoin, shorten it."""
     return msat_to_amount(MilliSatoshi.from_btc(Decimal(btc)))
-
-
-def bitarray_to_u5(barr):
-    assert barr.len % 5 == 0
-    ret = []
-    s = bitstring.ConstBitStream(barr)
-    while s.pos != s.len:
-        ret.append(s.read(5).uint)
-    return ret
-
-
-def u5_to_bitarray(arr):
-    """Bech32 spits out array of 5-bit values. Shim here."""
-    ret = bitstring.BitArray()
-    for a in arr:
-        ret += bitstring.pack("uint:5", a)
-    return ret
-
-
-def trim_to_bytes(barr) -> bytes:
-    """Adds a byte if necessary."""
-    b = barr.tobytes()
-    if barr.len % 8 != 0:
-        return b[:-1]
-    return b
