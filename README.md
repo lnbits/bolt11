@@ -62,7 +62,7 @@ $ poetry run pre-commit install
 ### running CLI
 ```console
 $ poetry run bolt11 --help
-$ poetry run bolt11 decode
+$ poetry run bolt11 decode lnbc20m1pvjluez.....
 {
   "currency": "bc",
   "amount": 2000000000,
