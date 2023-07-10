@@ -1,4 +1,4 @@
-from .core import decode
+from .decode import decode
 from .utils import amount_to_btc, btc_to_amount
 
 

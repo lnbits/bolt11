@@ -7,7 +7,7 @@ isort:
 	poetry run isort .
 
 mypy:
-	poetry run mypy
+	poetry run mypy .
 
 flake8:
 	poetry run flake8
@@ -19,4 +19,4 @@ pylint:
 	poetry run pylint bolt11
 
 test:
-	poetry run pytest
+	poetry run pytest tests

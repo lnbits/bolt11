@@ -1,64 +1,13 @@
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from hashlib import sha256
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, Dict, Optional
 
-
-class LightningInvoice(NamedTuple):
-    """Lightning invoice."""
-
-    currency: str
-    payee_public_key: str
-    signature: "Signature"
-    tags: Dict[str, Any]
-    timestamp: int
-    amount: Optional["MilliSatoshi"] = None
-    route_hints: List["Route"] = []
-
-    @property
-    def description(self) -> Optional[str]:
-        return self.tags["d"] if "d" in self.tags else None
-
-    @property
-    def description_hash(self) -> Optional[str]:
-        return self.tags["h"] if "h" in self.tags else None
-
-    @property
-    def dt(self) -> datetime:
-        return datetime.fromtimestamp(self.timestamp)
-
-    @property
-    def expiry_time(self) -> int:
-        return self.tags["x"] if "x" in self.tags else 3600
-
-    @property
-    def fallback_on_chain_address(self) -> Optional[str]:
-        return self.tags["f"] if "f" in self.tags else None
-
-    @property
-    def min_final_cltv_expiry(self) -> Optional[int]:
-        return self.tags["c"] if "c" in self.tags else 9
-
-    @property
-    def payment_hash(self) -> str:
-        return self.tags["p"]
-
-    @property
-    def payment_secret(self) -> Optional[str]:
-        return self.tags["s"] if "s" in self.tags else None
-
-    def has_expired(self) -> bool:
-        return time.time() > self.timestamp + self.expiry_time
-
-    def is_mainnet(self) -> bool:
-        return self.currency == "bc"
-
-    def is_testnet(self) -> bool:
-        return self.currency == "tb"
-
-    def is_regtest(self) -> bool:
-        return self.currency == "bcrt"
+from .models.fallback import Fallback
+from .models.features import Features
+from .models.routehint import RouteHint
+from .models.signature import Signature
 
 
 class MilliSatoshi(int):
@@ -77,35 +26,74 @@ class MilliSatoshi(int):
         return self // 1000
 
 
-class Route(NamedTuple):
-    public_key: str
-    short_channel_id: str
-    base_fee: MilliSatoshi
-    ppm_fee: int
-    cltv_expiry_delta: int
+@dataclass
+class Bolt11:
+    """Bolt11 Lightning invoice."""
 
-
-class Signature(NamedTuple):
-    """An invoice signature."""
-
-    data: bytes
-    signing_data: bytes
+    currency: str
+    timestamp: int
+    tags: Dict[str, Any]
+    amount: Optional[MilliSatoshi] = None
+    signature: Optional[Signature] = None
 
     @property
-    def r(self) -> str:
-        return self.data[:32].hex()
+    def description(self) -> Optional[str]:
+        return self.tags["d"] if "d" in self.tags else None
 
     @property
-    def s(self) -> str:
-        return self.data[32:64].hex()
+    def description_hash(self) -> Optional[str]:
+        return self.tags["h"] if "h" in self.tags else None
 
     @property
-    def recovery_flag(self) -> int:
-        return int(self.data[64])
+    def metadata(self) -> Optional[str]:
+        return self.tags["m"] if "m" in self.tags else None
 
     @property
-    def preimage(self) -> bytes:
-        return sha256(self.signing_data).digest()
+    def dt(self) -> datetime:
+        return datetime.fromtimestamp(self.timestamp)
 
-    def hex(self) -> str:
-        return self.data[:64].hex()
+    @property
+    def expiry(self) -> Optional[int]:
+        return self.tags["x"] if "x" in self.tags else None
+
+    @property
+    def features(self) -> Optional[Features]:
+        return self.tags["9"] if "9" in self.tags else None
+
+    @property
+    def fallback(self) -> Optional[Fallback]:
+        return self.tags["f"] if "f" in self.tags else None
+
+    @property
+    def route_hints(self) -> Optional[RouteHint]:
+        return self.tags["r"] if "r" in self.tags else None
+
+    @property
+    def min_final_cltv_expiry(self) -> Optional[int]:
+        return self.tags["c"] if "c" in self.tags else 9
+
+    @property
+    def payment_hash(self) -> Optional[str]:
+        return self.tags["p"] or None
+
+    @property
+    def payment_secret(self) -> Optional[str]:
+        return self.tags["s"] if "s" in self.tags else None
+
+    @property
+    def payee(self) -> Optional[str]:
+        return self.tags["n"] if "n" in self.tags else None
+
+    def has_expired(self) -> bool:
+        if self.expiry is None:
+            return False
+        return time.time() > self.timestamp + self.expiry
+
+    def is_mainnet(self) -> bool:
+        return self.currency == "bc"
+
+    def is_testnet(self) -> bool:
+        return self.currency == "tb"
+
+    def is_regtest(self) -> bool:
+        return self.currency == "bcrt"
