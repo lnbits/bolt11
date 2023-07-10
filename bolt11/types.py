@@ -1,4 +1,5 @@
 import time
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -83,6 +84,38 @@ class Bolt11:
     @property
     def payee(self) -> Optional[str]:
         return self.tags["n"] if "n" in self.tags else None
+
+    @property
+    def json(self) -> str:
+        json_data = {
+            "currency": self.currency,
+            "amount": self.amount or 0,
+            "timestamp": self.timestamp,
+            "signature": self.signature.hex if self.signature else "",
+        }
+        if self.description:
+            json_data["description"] = self.description
+        if self.description_hash:
+            json_data["description_hash"] = self.description_hash
+        if self.metadata:
+            json_data["metadata"] = self.metadata
+        if self.expiry:
+            json_data["expiry"] = self.expiry
+        if self.features:
+            json_data["features"] = self.features.readable
+        if self.fallback:
+            json_data["fallback"] = self.fallback.address
+        if self.route_hints:
+            json_data["route_hints"] = [ route._asdict()  for route in self.route_hints.routes ]
+        if self.min_final_cltv_expiry:
+            json_data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
+        if self.payment_hash:
+            json_data["payment_hash"] = self.payment_hash
+        if self.payment_secret:
+            json_data["payment_secret"] = self.payment_secret
+        if self.payee:
+            json_data["payee"] = self.payee
+        return json.dumps(json_data)
 
     def has_expired(self) -> bool:
         if self.expiry is None:
