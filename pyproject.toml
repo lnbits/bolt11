@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bolt11"
-version = "0.1.0"
+version = "1.0.0"
 description = "A library for encoding and decoding BOLT11 payment requests."
 repository = "https://github.com/lnbits/bolt11"
 authors = [
@@ -9,6 +9,10 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
+packages = [
+  {include = "bolt11"},
+  {include = "bolt11/py.typed"},
+]
 
 
 [tool.poetry.dependencies]
@@ -80,3 +84,6 @@ disable = [
   "missing-module-docstring",
   "consider-using-f-string",
 ]
+
+[tool.poetry.scripts]
+bolt11 = "bolt11.cli:main"
