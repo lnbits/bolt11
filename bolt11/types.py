@@ -89,7 +89,7 @@ class Bolt11:
     def json(self) -> str:
         json_data = {
             "currency": self.currency,
-            "amount": self.amount or 0,
+            "amount": int(self.amount) if self.amount else 0,
             "timestamp": self.timestamp,
             "signature": self.signature.hex if self.signature else "",
         }
@@ -106,7 +106,7 @@ class Bolt11:
         if self.fallback:
             json_data["fallback"] = self.fallback.address
         if self.route_hints:
-            json_data["route_hints"] = [ route._asdict()  for route in self.route_hints.routes ]
+            json_data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
         if self.min_final_cltv_expiry:
             json_data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
         if self.payment_hash:
