@@ -1,10 +1,11 @@
 """ bolt11 CLI """
 
 import sys
+
 import click
+
 # import json
 from .decode import decode as bolt11_decode
-
 
 # disable tracebacks on exceptions
 sys.tracebacklimit = 0
