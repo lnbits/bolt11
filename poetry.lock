@@ -49,14 +49,15 @@ files = [
 
 [[package]]
 name = "bitstring"
-version = "4.0.2"
+version = "3.1.9"
 description = "Simple construction, analysis and modification of binary data."
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = "*"
 files = [
-    {file = "bitstring-4.0.2-py3-none-any.whl", hash = "sha256:f93893791e8a6ecb02adcc5c191aaa964a06a9e1449e326cfb4f49ff5198e588"},
-    {file = "bitstring-4.0.2.tar.gz", hash = "sha256:a391db8828ac4485dd5ce72c80b27ebac3e7b989631359959e310cd9729723b2"},
+    {file = "bitstring-3.1.9-py2-none-any.whl", hash = "sha256:e3e340e58900a948787a05e8c08772f1ccbe133f6f41fe3f0fa19a18a22bbf4f"},
+    {file = "bitstring-3.1.9-py3-none-any.whl", hash = "sha256:0de167daa6a00c9386255a7cac931b45e6e24e0ad7ea64f1f92a64ac23ad4578"},
+    {file = "bitstring-3.1.9.tar.gz", hash = "sha256:a5848a3f63111785224dca8bb4c0a75b62ecdef56a042c8d6be74b16f7e860e7"},
 ]
 
 [[package]]
@@ -1025,4 +1026,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "35f468446565f7b1e487d7c3b5a9c2ee27124577d4898ef8f5c611853f0850b4"
+content-hash = "3813ffd090cad8215262b3d6cbe345ebfe432145447bda6149dc92d4ef06d9c9"
