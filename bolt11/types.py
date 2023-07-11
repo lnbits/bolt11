@@ -75,7 +75,7 @@ class Bolt11:
 
     @property
     def payment_hash(self) -> Optional[str]:
-        return self.tags["p"] or None
+        return self.tags["p"] if "p" in self.tags else None
 
     @property
     def payment_secret(self) -> Optional[str]:
