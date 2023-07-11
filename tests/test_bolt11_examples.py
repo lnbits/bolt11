@@ -530,22 +530,22 @@ class TestBolt11:
         re_encoded = encode(decoded)
         assert re_encoded == ex["payment_request"]
 
-        # invoice = Bolt11(
-        #     currency=ex["currency"],
-        #     amount=ex["amount"],
-        #     timestamp=ex["timestamp"],
-        #     tags={
-        #         "s": ex["payment_secret"],
-        #         "h": ex["description_hash"],
-        #         "p": ex["payment_hash"],
-        #         "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-        #         "n": ex["payee"],
-        #         "9": Features.from_feature_list(ex["feature_list"]),
-        #     },
-        # )
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount=ex["amount"],
+            timestamp=ex["timestamp"],
+            tags={
+                "s": ex["payment_secret"],
+                "h": ex["description_hash"],
+                "p": ex["payment_hash"],
+                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                "n": ex["payee"],
+                "9": Features.from_feature_list(ex["feature_list"]),
+            },
+        )
 
-        # encoded = encode(invoice, ex["private_key"])
-        # assert encoded == ex["payment_request"]
+        encoded = encode(invoice, ex["private_key"])
+        assert encoded == ex["payment_request"]
 
     def test_example_9(self):
         """
@@ -595,22 +595,22 @@ class TestBolt11:
         re_encoded = encode(decoded)
         assert re_encoded == ex["payment_request"]
 
-        # invoice = Bolt11(
-        #     currency=ex["currency"],
-        #     amount=ex["amount"],
-        #     timestamp=ex["timestamp"],
-        #     tags={
-        #         "s": ex["payment_secret"],
-        #         "h": ex["description_hash"],
-        #         "p": ex["payment_hash"],
-        #         "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-        #         "n": ex["payee"],
-        #         "9": Features.from_feature_list(ex["feature_list"]),
-        #     },
-        # )
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount=ex["amount"],
+            timestamp=ex["timestamp"],
+            tags={
+                "s": ex["payment_secret"],
+                "h": ex["description_hash"],
+                "p": ex["payment_hash"],
+                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                "n": ex["payee"],
+                "9": Features.from_feature_list(ex["feature_list"]),
+            },
+        )
 
-        # encoded = encode(invoice, ex["private_key"])
-        # assert encoded == ex["payment_request"]
+        encoded = encode(invoice, ex["private_key"])
+        assert encoded == ex["payment_request"]
 
     def test_example_10(self):
         """
