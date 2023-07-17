@@ -46,7 +46,7 @@ class FeatureExtra:
 
 class Features(NamedTuple):
     data: Bits
-    feature_list: Dict[Feature | FeatureExtra, FeatureState]
+    feature_list: Dict[Union[Feature, FeatureExtra], FeatureState]
 
     @classmethod
     def from_bitstring(cls, data: Bits) -> "Features":
@@ -64,7 +64,7 @@ class Features(NamedTuple):
         return cls(data, feature_list)
 
     @classmethod
-    def from_feature_list(cls, feature_list: Dict[Feature | FeatureExtra, FeatureState]) -> "Features":
+    def from_feature_list(cls, feature_list: Dict[Union[Feature, FeatureExtra], FeatureState]) -> "Features":
         length = max([feature.value + 1 for feature in feature_list]) * 2
         data = BitArray(length=length)
         for feature, feature_state in feature_list.items():
