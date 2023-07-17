@@ -1,6 +1,6 @@
 from enum import Enum
 from math import floor
-from typing import Dict, NamedTuple, Optional
+from typing import Dict, NamedTuple, Optional, Union
 
 from bitstring import BitArray, Bits
 
@@ -29,61 +29,42 @@ class Feature(Enum):
     option_scid_alias = 16
     option_payment_metadata = 17
     option_zeroconf_chanids = 18
-    extra_1 = 19
-    extra_2 = 20
-    extra_3 = 21
-    extra_4 = 22
-    extra_5 = 23
-    extra_6 = 24
-    extra_7 = 25
-    extra_8 = 26
-    extra_9 = 27
-    extra_10 = 28
-    extra_11 = 29
-    extra_12 = 30
-    extra_13 = 31
-    extra_14 = 32
-    extra_15 = 33
-    extra_16 = 34
-    extra_17 = 35
-    extra_18 = 36
-    extra_19 = 37
-    extra_20 = 38
-    extra_21 = 39
-    extra_22 = 40
-    extra_23 = 41
-    extra_24 = 42
-    extra_25 = 43
-    extra_26 = 44
-    extra_27 = 45
-    extra_28 = 46
-    extra_29 = 47
-    extra_30 = 48
-    extra_31 = 49
+
+
+class FeatureExtra:
+    def __init__(self, index: int):
+        self.feature_index = index
+
+    @property
+    def value(self) -> int:
+        return self.feature_index + len(Feature)
+
+    @property
+    def name(self) -> str:
+        return f"extra_{self.feature_index - len(Feature)}"
 
 
 class Features(NamedTuple):
     data: Bits
-    feature_list: Dict[Feature, FeatureState]
+    feature_list: Dict[Feature | FeatureExtra, FeatureState]
 
     @classmethod
     def from_bitstring(cls, data: Bits) -> "Features":
         length = data.length
-        feature_list: Dict[Feature, FeatureState] = {}
+        feature_list: Dict[Union[Feature, FeatureExtra], FeatureState] = {}
         for i in range(0, length):
             feature_index = floor(i / 2)
-            if floor(i / 2) > len(Feature):
-                raise ValueError(f"Feature index ({i}) out of range, word_length: {length}")
             si = i + 1
             cut = data[-si : -si + 1] if i > 0 else data[-si:]
             if bool(cut):
-                feature = Feature(floor(i / 2))
-                if feature not in feature_list:
-                    feature_list[Feature(feature_index)] = FeatureState.supported if i % 2 else FeatureState.required
+                feature: Union[Feature, FeatureExtra] = (
+                    Feature(feature_index) if feature_index < len(Feature) else FeatureExtra(feature_index)
+                )
+                feature_list[feature] = FeatureState.supported if i % 2 else FeatureState.required
         return cls(data, feature_list)
 
     @classmethod
-    def from_feature_list(cls, feature_list: Dict[Feature, FeatureState]) -> "Features":
+    def from_feature_list(cls, feature_list: Dict[Feature | FeatureExtra, FeatureState]) -> "Features":
         length = max([feature.value + 1 for feature in feature_list]) * 2
         data = BitArray(length=length)
         for feature, feature_state in feature_list.items():

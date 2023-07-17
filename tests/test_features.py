@@ -1,7 +1,7 @@
 import pytest
 
 from bolt11.decode import decode
-from bolt11.models.features import Feature, Features, FeatureState
+from bolt11.models.features import Feature, FeatureExtra, Features, FeatureState
 
 
 class TestDecodeFeatures:
@@ -33,7 +33,7 @@ class TestDecodeFeatures:
                 {
                     Feature.var_onion_optin: FeatureState.required,
                     Feature.payment_secret: FeatureState.required,
-                    Feature.extra_31: FeatureState.supported,
+                    FeatureExtra(31): FeatureState.supported,
                 },
             ),
             (
@@ -47,7 +47,29 @@ class TestDecodeFeatures:
                 {
                     Feature.var_onion_optin: FeatureState.required,
                     Feature.payment_secret: FeatureState.required,
-                    Feature.extra_6: FeatureState.required,
+                    FeatureExtra(6): FeatureState.required,
+                },
+            ),
+            (
+                # phoenix invoice
+                (
+                    "lnbc1950n1pjtrgxnpp5ye3lhh8ye8ywm85evshn9wyhdsdg9a350tdhm3dyw89mwfht8s9qdqqxqyj"
+                    "w5q9q7sqqqqqqqqqqqqqqqqqqqqqqqqq9qsqsp5z22wjrrm0lgl32e0yes38dzmvjxnajrvanhw3hp4"
+                    "duq4k55wl0gsrzjqwryaup9lh50kkranzgcdnn2fgvx390wgj5jd07rwr3vxeje0glclludsryzx7vv"
+                    "vqqqqqlgqqqqqeqqjqqq3zq0d9kw8q4fhsgxh595f2l0ass4zaj2pdknzhxzzrlf7g5wgsk3nlgzzed"
+                    "uhnp6mva9jehwcq9y4hrllwt6ffl822q5drdgvxtjspmgfnls"
+                ),
+                {
+                    "var_onion_optin": "supported",
+                    "payment_secret": "supported",
+                    "basic_mpp": "supported",
+                    "extra_56": "supported",
+                },
+                {
+                    Feature.var_onion_optin: FeatureState.supported,
+                    Feature.payment_secret: FeatureState.supported,
+                    Feature.basic_mpp: FeatureState.supported,
+                    FeatureExtra(56): FeatureState.supported,
                 },
             ),
         ],
