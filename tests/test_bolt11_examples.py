@@ -1,7 +1,7 @@
 from bolt11.decode import decode
 from bolt11.encode import encode
 from bolt11.models.fallback import Fallback
-from bolt11.models.features import Feature, Features, FeatureState
+from bolt11.models.features import Feature, FeatureExtra, Features, FeatureState
 from bolt11.models.routehint import RouteHint
 from bolt11.types import Bolt11
 
@@ -726,7 +726,7 @@ class TestBolt11:
             "feature_list": {
                 Feature.var_onion_optin: FeatureState.required,
                 Feature.payment_secret: FeatureState.required,
-                Feature.extra_31: FeatureState.supported,
+                FeatureExtra(31): FeatureState.supported,
             },
             "signature": (
                 "5755469bf4b8e6b6ae7a1308d5f9bad5c82812e0855cd24fac242aa323fa820c5c551ede4faeabcb7fb6d5a46"
@@ -789,7 +789,7 @@ class TestBolt11:
             "feature_list": {
                 Feature.var_onion_optin: FeatureState.required,
                 Feature.payment_secret: FeatureState.required,
-                Feature.extra_31: FeatureState.supported,
+                FeatureExtra(31): FeatureState.supported,
             },
             "signature": (
                 "5755469bf4b8e6b6ae7a1308d5f9bad5c82812e0855cd24fac242aa323fa820c5c551ede4faeabcb7fb6d5a46"
@@ -859,7 +859,7 @@ class TestBolt11:
             "feature_list": {
                 Feature.var_onion_optin: FeatureState.required,
                 Feature.payment_secret: FeatureState.required,
-                Feature.extra_31: FeatureState.supported,
+                FeatureExtra(31): FeatureState.supported,
             },
             "signature": (
                 "150a5252308f25bc2641a186de87470189bb003774326beee33b9a2a720d1584386631c5dda6fc3"
@@ -905,7 +905,7 @@ class TestBolt11:
             "feature_list": {
                 Feature.var_onion_optin: FeatureState.required,
                 Feature.payment_secret: FeatureState.required,
-                Feature.extra_6: FeatureState.required,
+                FeatureExtra(6): FeatureState.required,
             },
             "signature": (
                 "f5d27be7d9c27d3aa521bc35d77cabd6bda18f1f61716445b19e27e4e17a887508ea8de5a8e1d94f561248f65"
