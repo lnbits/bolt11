@@ -13,7 +13,7 @@ class TestBolt11:
 
     def test_example_1(self):
         """
-        Please make a donation of any amount using payment_hash
+        Please make a donation of any amount_msat using payment_hash
         0001020304050607080900010203040506070809000102030405060708090102
         to me @03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad
         """
@@ -28,7 +28,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": None,
+            "amount_msat": None,
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "description": "Please consider supporting this project",
             "features": {"var_onion_optin": "required", "payment_secret": "required"},
@@ -46,7 +46,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.features
@@ -59,7 +59,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -88,7 +88,7 @@ class TestBolt11:
             "expiry": 60,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 250_000_000,
+            "amount_msat": 250_000_000,
             "description": "1 cup coffee",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "features": {"var_onion_optin": "required", "payment_secret": "required"},
@@ -106,7 +106,7 @@ class TestBolt11:
         assert decoded.expiry == ex["expiry"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.features
@@ -119,7 +119,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -150,7 +150,7 @@ class TestBolt11:
             "expiry": 60,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 250_000_000,
+            "amount_msat": 250_000_000,
             "description": "ナンセンス 1杯",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "features": {"var_onion_optin": "required", "payment_secret": "required"},
@@ -168,7 +168,7 @@ class TestBolt11:
         assert decoded.expiry == ex["expiry"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.features
@@ -181,7 +181,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -211,7 +211,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -229,7 +229,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -243,7 +243,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -272,7 +272,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -293,7 +293,7 @@ class TestBolt11:
         assert decoded.payment_secret == ex["payment_secret"]
         assert decoded.fallback
         assert decoded.fallback.address == ex["fallback"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -307,7 +307,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -341,7 +341,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -378,7 +378,7 @@ class TestBolt11:
         assert decoded.payment_secret == ex["payment_secret"]
         assert decoded.fallback
         assert decoded.fallback.address == ex["fallback"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -401,7 +401,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -432,7 +432,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -451,7 +451,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -467,7 +467,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -497,7 +497,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -516,7 +516,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -532,7 +532,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -562,7 +562,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_000_000_000,
+            "amount_msat": 2_000_000_000,
             "description": None,
             "description_hash": "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -581,7 +581,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.description_hash == ex["description_hash"]
         assert decoded.payee == ex["payee"]
@@ -597,7 +597,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "s": ex["payment_secret"],
@@ -614,7 +614,7 @@ class TestBolt11:
 
     def test_example_10(self):
         """
-        Please send 0.00967878534 BTC for a list of items within one week, amount in pico-BTC
+        Please send 0.00967878534 BTC for a list of items within one week, amount_msat in pico-BTC
         """
         ex = {
             "payment_request": (
@@ -630,7 +630,7 @@ class TestBolt11:
             "timestamp": 1572468703,
             "payment_hash": "462264ede7e14047e9b249da94fefc47f41f7d02ee9b091815a5506bc8abf75f",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 967_878_534,
+            "amount_msat": 967_878_534,
             "expiry": 604800,
             "min_final_cltv_expiry": 10,
             "description": (
@@ -663,7 +663,7 @@ class TestBolt11:
         assert decoded.min_final_cltv_expiry == ex["min_final_cltv_expiry"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.signature
@@ -686,7 +686,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "p": ex["payment_hash"],
@@ -719,7 +719,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_500_000_000,
+            "amount_msat": 2_500_000_000,
             "description": "coffee beans",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "features": {"var_onion_optin": "required", "payment_secret": "required", "extra_31": "supported"},
@@ -740,7 +740,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.signature
@@ -753,7 +753,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "p": ex["payment_hash"],
@@ -782,7 +782,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_500_000_000,
+            "amount_msat": 2_500_000_000,
             "description": "coffee beans",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "features": {"var_onion_optin": "required", "payment_secret": "required", "extra_31": "supported"},
@@ -803,7 +803,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.signature
@@ -816,7 +816,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "p": ex["payment_hash"],
@@ -852,7 +852,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 2_500_000_000,
+            "amount_msat": 2_500_000_000,
             "description": "coffee beans",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
             "features": {"var_onion_optin": "required", "payment_secret": "required", "extra_31": "supported"},
@@ -873,7 +873,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert not decoded.fallback
@@ -897,7 +897,7 @@ class TestBolt11:
             "timestamp": 1496314658,
             "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
             "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
-            "amount": 1_000_000_000,
+            "amount_msat": 1_000_000_000,
             "description": "payment metadata inside",
             "metadata": "01fafaf0",
             "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad",
@@ -919,7 +919,7 @@ class TestBolt11:
         assert decoded.timestamp == ex["timestamp"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
-        assert decoded.amount == ex["amount"]
+        assert decoded.amount_msat == ex["amount_msat"]
         assert decoded.description == ex["description"]
         assert decoded.metadata == ex["metadata"]
         assert decoded.payee == ex["payee"]
@@ -933,7 +933,7 @@ class TestBolt11:
 
         invoice = Bolt11(
             currency=ex["currency"],
-            amount=ex["amount"],
+            amount_msat=ex["amount_msat"],
             timestamp=ex["timestamp"],
             tags={
                 "p": ex["payment_hash"],

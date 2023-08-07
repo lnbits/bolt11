@@ -56,8 +56,8 @@ def decode(pr: str) -> Bolt11:
         tag, tagdata, data_part = _pull_tagged(data_part)
         data_length = len(tagdata or []) / 5  # type: ignore
 
-        # MUST skip over unknown fields, OR an f field with unknown version, OR p, h, s or n
-        # fields that do NOT have data_lengths of 52, 52, 52 or 53, respectively.
+        # MUST skip over unknown fields, OR an f field with unknown version, OR p, h,
+        # s or n fields that do NOT have data_lengths of 52, 52, 52 or 53, respectively.
 
         if tag == "p" and data_length == 52 and not hasattr(tags, "p"):
             tags["p"] = trim_to_bytes(tagdata).hex()  # type: ignore
@@ -85,9 +85,9 @@ def decode(pr: str) -> Bolt11:
 
     signature = Signature(signature_data=signature_data, signing_data=hrp.encode() + data_part.tobytes())
 
-    # A reader MUST check that the `signature` is valid (see the `n` tagged field specified below).
-    # A reader MUST use the `n` field to validate the signature instead of
-    # performing signature recovery if a valid `n` field is provided.
+    # A reader MUST check that the `signature` is valid (see the `n` tagged field
+    # specified below). A reader MUST use the `n` field to validate the signature
+    # instead of performing signature recovery if a valid `n` field is provided.
     if hasattr(tags, "n"):
         # TODO: research why no test runs this?
         signature.verify(tags["n"])
@@ -96,7 +96,7 @@ def decode(pr: str) -> Bolt11:
 
     return Bolt11(
         currency=currency,
-        amount=amount_msat,
+        amount_msat=amount_msat,
         timestamp=timestamp,
         signature=signature,
         tags=tags,

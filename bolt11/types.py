@@ -34,7 +34,7 @@ class Bolt11:
     currency: str
     timestamp: int
     tags: Dict[str, Any]
-    amount: Optional[MilliSatoshi] = None
+    amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
     @property
@@ -89,7 +89,7 @@ class Bolt11:
     def json(self) -> str:
         json_data = {
             "currency": self.currency,
-            "amount": int(self.amount) if self.amount else 0,
+            "amount_msat": int(self.amount_msat) if self.amount_msat else 0,
             "timestamp": self.timestamp,
             "signature": self.signature.hex if self.signature else "",
         }

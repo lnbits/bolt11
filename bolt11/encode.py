@@ -37,10 +37,10 @@ def _tagged_int(tag: bytes):
     return value
 
 
-def _create_hrp(currency: str, amount: Optional[MilliSatoshi]) -> str:
+def _create_hrp(currency: str, amount_msat: Optional[MilliSatoshi]) -> str:
     hrp = "ln" + currency
-    if amount:
-        hrp += msat_to_amount(amount)
+    if amount_msat:
+        hrp += msat_to_amount(amount_msat)
     return hrp
 
 
@@ -79,7 +79,7 @@ def encode(invoice: Bolt11, private_key: Optional[str] = None) -> str:
         elif k == "r":
             tags += _tagged("r", tag.data)
 
-    hrp = _create_hrp(invoice.currency, invoice.amount)
+    hrp = _create_hrp(invoice.currency, invoice.amount_msat)
 
     if private_key:
         invoice.signature = Signature.from_private_key(private_key, hrp, timestamp + tags)
