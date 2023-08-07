@@ -32,9 +32,9 @@ class Bolt11:
     """Bolt11 Lightning invoice."""
 
     currency: str
-    timestamp: int
+    date: int
     tags: Dict[str, Any]
-    amount: Optional[MilliSatoshi] = None
+    amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
     @property
@@ -51,7 +51,7 @@ class Bolt11:
 
     @property
     def dt(self) -> datetime:
-        return datetime.fromtimestamp(self.timestamp)
+        return datetime.fromtimestamp(self.date)
 
     @property
     def expiry(self) -> Optional[int]:
@@ -89,8 +89,8 @@ class Bolt11:
     def json(self) -> str:
         json_data = {
             "currency": self.currency,
-            "amount": int(self.amount) if self.amount else 0,
-            "timestamp": self.timestamp,
+            "amount_msat": int(self.amount_msat) if self.amount_msat else 0,
+            "date": self.date,
             "signature": self.signature.hex if self.signature else "",
         }
         if self.description:
@@ -120,7 +120,7 @@ class Bolt11:
     def has_expired(self) -> bool:
         if self.expiry is None:
             return False
-        return time.time() > self.timestamp + self.expiry
+        return time.time() > self.date + self.expiry
 
     def is_mainnet(self) -> bool:
         return self.currency == "bc"
