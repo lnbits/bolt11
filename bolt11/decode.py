@@ -97,7 +97,7 @@ def decode(pr: str) -> Bolt11:
     return Bolt11(
         currency=currency,
         amount_msat=amount_msat,
-        timestamp=timestamp,
+        date=timestamp,
         signature=signature,
         tags=tags,
     )

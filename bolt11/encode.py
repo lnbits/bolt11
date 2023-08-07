@@ -51,7 +51,7 @@ def encode(invoice: Bolt11, private_key: Optional[str] = None) -> str:
     if not invoice.description and not invoice.description_hash:
         raise ValueError("Must include either 'd' or 'h'")
 
-    timestamp = BitArray(uint=invoice.timestamp, length=35)
+    timestamp = BitArray(uint=invoice.date, length=35)
     tags = BitArray()
 
     for k, tag in invoice.tags.items():
