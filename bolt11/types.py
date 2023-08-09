@@ -72,15 +72,15 @@ class Bolt11:
 
     @property
     def description(self) -> Optional[str]:
-        return self.tags["d"] if "d" in self.tags else None
+        return self.tags.get("d")
 
     @property
     def description_hash(self) -> Optional[str]:
-        return self.tags["h"] if "h" in self.tags else None
+        return self.tags.get("h")
 
     @property
     def metadata(self) -> Optional[str]:
-        return self.tags["m"] if "m" in self.tags else None
+        return self.tags.get("m")
 
     @property
     def dt(self) -> datetime:
@@ -88,23 +88,23 @@ class Bolt11:
 
     @property
     def expiry(self) -> Optional[int]:
-        return self.tags["x"] if "x" in self.tags else None
+        return self.tags.get("x")
 
     @property
     def features(self) -> Optional[Features]:
-        return self.tags["9"] if "9" in self.tags else None
+        return self.tags.get("9")
 
     @property
     def fallback(self) -> Optional[Fallback]:
-        return self.tags["f"] if "f" in self.tags else None
+        return self.tags.get("f")
 
     @property
     def route_hints(self) -> Optional[RouteHint]:
-        return self.tags["r"] if "r" in self.tags else None
+        return self.tags.get("r")
 
     @property
     def min_final_cltv_expiry(self) -> Optional[int]:
-        return self.tags["c"] if "c" in self.tags else 18
+        return self.tags.get("c", 18)
 
     @property
     def has_payment_hash(self) -> bool:
@@ -118,11 +118,11 @@ class Bolt11:
 
     @property
     def payment_secret(self) -> Optional[str]:
-        return self.tags["s"] if "s" in self.tags else None
+        return self.tags.get("s")
 
     @property
     def payee(self) -> Optional[str]:
-        return self.tags["n"] if "n" in self.tags else None
+        return self.tags.get("n")
 
     @property
     def data(self) -> dict:
