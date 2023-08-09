@@ -33,7 +33,7 @@ bitstring = "*"
 black = "^23.7.0"
 mypy = "^1.5.1"
 pytest = "^7.2.1"
-pytest-cov = "^4.0.0"
+pytest-cov = "^4.1.0"
 pyright = "^1.1.323"
 pre-commit = "^3.3.3"
 ruff = "^0.0.283"
@@ -50,6 +50,7 @@ files = "bolt11"
 
 
 [tool.pytest.ini_options]
+addopts = "-s --cov=bolt11 --cov-report=xml"
 testpaths = [
   "tests"
 ]

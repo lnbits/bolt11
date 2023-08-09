@@ -18,3 +18,4 @@ dist
 htmlcov
 Pipfile.lock
 tags
+coverage.xml

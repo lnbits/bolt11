@@ -18,4 +18,4 @@ pyright:
 	poetry run pyright
 
 test:
-	poetry run pytest tests
+	poetry run pytest
