@@ -59,9 +59,14 @@ $ make
 $ poetry run pre-commit install
 ```
 
+
 ### running CLI
 ```console
 $ poetry run bolt11 --help
+```
+
+### running CLI decode
+```
 $ poetry run bolt11 decode lnbc20m1pvjluez.....
 {
   "currency": "bc",
@@ -96,3 +101,16 @@ $ poetry run bolt11 decode lnbc20m1pvjluez.....
   "payee": "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad"
 }
 ```
+
+### running CLI encode
+```
+$ poetry run bolt11 encode '{
+  "currency": "bc",
+  "amount_msat": 1000,
+  "date": 1590000000,
+  "tags": {
+      "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
+      "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
+      "d": "description"
+  }
+}' e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734
