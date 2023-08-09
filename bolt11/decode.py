@@ -28,7 +28,11 @@ def _pull_tagged(stream):
     return (CHARSET[tag], stream.read(length * 5), stream)
 
 
-def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
+def decode(
+    pr: str,
+    ignore_exceptions: bool = False,
+    strict: bool = False,
+) -> Bolt11:
 
     hrp, bech32_data = bech32_decode(pr)
     if hrp is None or bech32_data is None or hrp.startswith("ln") is None:
@@ -103,11 +107,6 @@ def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
     else:
         tags["n"] = signature.recover_public_key()
 
-    # if the c field (min_final_cltv_expiry_delta) is not provided:
-    #    MUST use an expiry delta of at least 18 when making the payment
-    # if "c" not in tags:
-    #     tags["c"] = 18
-
     bolt11 = Bolt11(
         currency=currency,
         amount_msat=amount_msat,
@@ -117,6 +116,6 @@ def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
     )
 
     if not ignore_exceptions:
-        bolt11.validate()
+        bolt11.validate(strict=strict)
 
     return bolt11
