@@ -4,6 +4,10 @@ from bech32 import CHARSET, bech32_encode
 from bitstring import BitArray, Bits, pack
 
 from .bit_utils import bitarray_to_u5
+from .exceptions import (
+    Bolt11InvalidDescriptionHashException,
+    Bolt11NoSignatureException,
+)
 from .models.signature import Signature
 from .types import Bolt11, MilliSatoshi
 from .utils import msat_to_amount
@@ -44,9 +48,17 @@ def _create_hrp(currency: str, amount_msat: Optional[MilliSatoshi]) -> str:
     return hrp
 
 
-def encode(invoice: Bolt11, private_key: Optional[str] = None, ignore_exceptions: bool = False) -> str:
-    if not ignore_exceptions:
-        invoice.validate()
+def encode(
+    invoice: Bolt11,
+    private_key: Optional[str] = None,
+    ignore_exceptions: bool = False,
+) -> str:
+
+    try:
+        if invoice.description_hash:
+            bytes.fromhex(invoice.description_hash)
+    except Exception:
+        raise Bolt11InvalidDescriptionHashException()
 
     timestamp = BitArray(uint=invoice.date, length=35)
     tags = BitArray()
@@ -77,12 +89,19 @@ def encode(invoice: Bolt11, private_key: Optional[str] = None, ignore_exceptions
             tags += _tagged("r", tag.data)
 
     hrp = _create_hrp(invoice.currency, invoice.amount_msat)
+    data_part = timestamp + tags
 
     if private_key:
-        invoice.signature = Signature.from_private_key(private_key, hrp, timestamp + tags)
+        invoice.signature = Signature.from_private_key(private_key, hrp, data_part)
 
     if not invoice.signature:
-        raise ValueError("Must include either 'signature' or 'private_key'")
+        raise Bolt11NoSignatureException()
 
-    encoded = bech32_encode(hrp, bitarray_to_u5(timestamp + tags + BitArray(invoice.signature.signature_data)))
+    signature_part = BitArray(invoice.signature.signature_data)
+
+    if not ignore_exceptions:
+        invoice.validate()
+
+    encoded = bech32_encode(hrp, bitarray_to_u5(data_part + signature_part))
+
     return encoded
