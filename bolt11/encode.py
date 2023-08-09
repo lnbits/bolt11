@@ -44,12 +44,9 @@ def _create_hrp(currency: str, amount_msat: Optional[MilliSatoshi]) -> str:
     return hrp
 
 
-def encode(invoice: Bolt11, private_key: Optional[str] = None) -> str:
-    # A writer MUST include either a `d` or `h` field, and MUST NOT include
-    if invoice.description and invoice.description_hash:
-        raise ValueError("Cannot include both 'd' and 'h'")
-    if not invoice.description and not invoice.description_hash:
-        raise ValueError("Must include either 'd' or 'h'")
+def encode(invoice: Bolt11, private_key: Optional[str] = None, ignore_exceptions: bool = False) -> str:
+    if not ignore_exceptions:
+        invoice.validate()
 
     timestamp = BitArray(uint=invoice.date, length=35)
     tags = BitArray()
