@@ -52,6 +52,7 @@ def encode(
     invoice: Bolt11,
     private_key: Optional[str] = None,
     ignore_exceptions: bool = False,
+    strict: bool = False,
 ) -> str:
 
     try:
@@ -100,7 +101,7 @@ def encode(
     signature_part = BitArray(invoice.signature.signature_data)
 
     if not ignore_exceptions:
-        invoice.validate()
+        invoice.validate(strict=strict)
 
     encoded = bech32_encode(hrp, bitarray_to_u5(data_part + signature_part))
 

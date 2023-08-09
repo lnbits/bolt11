@@ -1,8 +1,4 @@
 """
-TODO: open issue why is this MUST? https://github.com/lightning/bolts/pull/1100
-    MUST include one c field (min_final_cltv_expiry_delta).
-        MUST set c to the minimum cltv_expiry it will accept for the last HTLC in the route.
-        SHOULD use the minimum data_length possible.
 
 TODO: multiple f fields not supported yet
     MAY include one or more f fields.
@@ -16,6 +12,7 @@ from bolt11.encode import encode
 from bolt11.exceptions import (
     Bolt11DescriptionException,
     Bolt11InvalidDescriptionHashException,
+    Bolt11NoMinFinalCltvException,
     Bolt11NoPaymentHashException,
     Bolt11NoPaymentSecretException,
 )
@@ -117,3 +114,23 @@ class TestBolt11Validation:
         )
         with pytest.raises(Bolt11DescriptionException):
             encode(invoice, ex["private_key"])
+
+    def test_validate_strict_encoding(self):
+        """
+        SHOULD include one `c` field (`min_final_cltv_expiry_delta`).
+        MUST set `c` to the minimum `cltv_expiry` it will accept for the last
+        """
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount_msat=ex["amount_msat"],
+            date=ex["date"],
+            tags={
+                "p": ex["payment_hash"],
+                "s": ex["payment_secret"],
+                "h": "6465736372697074696f6e",
+            },
+        )
+        bolt11 = encode(invoice, ex["private_key"])
+        assert bolt11.startswith("lnbc"), "should pass without strict"
+        with pytest.raises(Bolt11NoMinFinalCltvException):
+            encode(invoice, ex["private_key"], strict=True)

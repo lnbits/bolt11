@@ -29,7 +29,7 @@ class Bolt11NoMinFinalCltvException(Bolt11Exception):
     """
 
     def __init__(self):
-        super().__init__("Must include 'min_final_cltv_expiry_delta'")
+        super().__init__("Should include 'min_final_cltv_expiry_delta'")
 
 
 class Bolt11InvalidDescriptionHashException(Bolt11Exception):
