@@ -61,7 +61,12 @@ def decode(pr: str) -> Bolt11:
 
         if tag == "p" and data_length == 52 and not hasattr(tags, "p"):
             tags["p"] = trim_to_bytes(tagdata).hex()  # type: ignore
-        elif tag == "h" and data_length == 52 and not hasattr(tags, "h") and not hasattr(tags, "d"):
+        elif (
+            tag == "h"
+            and data_length == 52
+            and not hasattr(tags, "h")
+            and not hasattr(tags, "d")
+        ):
             tags["h"] = trim_to_bytes(tagdata).hex()  # type: ignore
         elif tag == "s" and data_length == 52 and not hasattr(tags, "s"):
             tags["s"] = trim_to_bytes(tagdata).hex()  # type: ignore
@@ -83,7 +88,10 @@ def decode(pr: str) -> Bolt11:
         elif tag == "r":
             tags["r"] = RouteHint.from_bitstring(tagdata)  # type: ignore
 
-    signature = Signature(signature_data=signature_data, signing_data=hrp.encode() + data_part.tobytes())
+    signature = Signature(
+        signature_data=signature_data,
+        signing_data=hrp.encode() + data_part.tobytes(),
+    )
 
     # A reader MUST check that the `signature` is valid (see the `n` tagged field
     # specified below). A reader MUST use the `n` field to validate the signature

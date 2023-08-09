@@ -58,13 +58,19 @@ class Features(NamedTuple):
             cut = data[-si : -si + 1] if i > 0 else data[-si:]
             if bool(cut):
                 feature: Union[Feature, FeatureExtra] = (
-                    Feature(feature_index) if feature_index < len(Feature) else FeatureExtra(feature_index)
+                    Feature(feature_index)
+                    if feature_index < len(Feature)
+                    else FeatureExtra(feature_index)
                 )
-                feature_list[feature] = FeatureState.supported if i % 2 else FeatureState.required
+                feature_list[feature] = (
+                    FeatureState.supported if i % 2 else FeatureState.required
+                )
         return cls(data, feature_list)
 
     @classmethod
-    def from_feature_list(cls, feature_list: Dict[Union[Feature, FeatureExtra], FeatureState]) -> "Features":
+    def from_feature_list(
+        cls, feature_list: Dict[Union[Feature, FeatureExtra], FeatureState]
+    ) -> "Features":
         length = max([feature.value + 1 for feature in feature_list]) * 2
         data = BitArray(length=length)
         for feature, feature_state in feature_list.items():

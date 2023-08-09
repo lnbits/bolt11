@@ -14,6 +14,8 @@ packages = [
   {include = "bolt11/py.typed"},
 ]
 
+[tool.poetry.scripts]
+bolt11 = "bolt11.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
@@ -25,28 +27,18 @@ secp256k1 = "^0.14.0"
 
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
-flake8 = "^6.0.0"
+black = "^23.7.0"
 mypy = "^1.0.0"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
-isort = "^5.12.0"
 pyright = "^1.1.320"
-pylint = "^2.17.2"
 pre-commit = "^3.3.3"
+ruff = "^0.0.283"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
-[tool.black]
-line-length = 128
-
-
-[tool.isort]
-profile = "black"
 
 
 [tool.mypy]
@@ -67,24 +59,57 @@ include = [
 ]
 
 
-[tool.pylint.'MESSAGES CONTROL']
-max-line-length=125
-disable = [
-  "import-error", # for pre-commit
-  "fixme",
-  "invalid-name",
-  "unsubscriptable-object",
-  "missing-class-docstring",
-  "missing-function-docstring",
-  "too-many-locals",
-  "too-many-branches",
-  "too-many-arguments",
-  "too-many-statements",
-  "too-many-instance-attributes",
-  "too-few-public-methods",
-  "missing-module-docstring",
-  "consider-using-f-string",
+[tool.black]
+line-length = 88
+
+# previously experimental-string-processing = true
+# this should autoformat string poperly but does not work
+preview = true
+
+
+[tool.ruff]
+# Same as Black. but black has a 10% overflow rule
+line-length = 88
+
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F", "I"]
+ignore = []
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
 ]
 
-[tool.poetry.scripts]
-bolt11 = "bolt11.cli:main"
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.8
+# target-version = "py38"
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10

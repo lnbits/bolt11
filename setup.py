@@ -32,6 +32,12 @@ setup(
     packages=["bolt11"],
     package_data={"bolt11": ["py.typed"]},
     python_requires=">=3.6",
-    install_requires=["base58", "bech32", "bitstring", "ecdsa", "typing-extensions; python_version<'3.8'"],
+    install_requires=[
+        "base58",
+        "bech32",
+        "bitstring",
+        "ecdsa",
+        "typing-extensions; python_version<'3.8'",
+    ],
     zip_safe=False,
 )

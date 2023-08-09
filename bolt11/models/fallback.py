@@ -54,7 +54,9 @@ class Fallback(NamedTuple):
                 wprog = Bits(addr[1:])
             return cls(data=pack("uint:5", wver) + wprog, currency=currency)
         else:
-            raise NotImplementedError("Support for currency {} not implemented".format(currency))
+            raise NotImplementedError(
+                "Support for currency {} not implemented".format(currency)
+            )
 
     @property
     def address(self) -> str:
