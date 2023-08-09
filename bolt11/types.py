@@ -5,8 +5,9 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, Optional
 
-from .exceptions import (  # Bolt11NoMinFinalCltvException,
+from .exceptions import (
     Bolt11DescriptionException,
+    Bolt11NoMinFinalCltvException,
     Bolt11NoPaymentHashException,
     Bolt11NoPaymentSecretException,
     Bolt11NoSignatureException,
@@ -43,17 +44,18 @@ class Bolt11:
     amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
-    def validate(self) -> None:
+    def validate(self, strict: bool = False) -> None:
         if "p" not in self.tags:
             raise Bolt11NoPaymentHashException()
         if "s" not in self.tags:
             raise Bolt11NoPaymentSecretException()
-        # if "c" not in self.tags:
-        #     raise Bolt11NoMinFinalCltvException()
         if "d" in self.tags and "h" in self.tags or "d" not in self.tags and "h" not in self.tags:
             raise Bolt11DescriptionException()
         if not self.signature:
             raise Bolt11NoSignatureException()
+        if strict:
+            if "c" not in self.tags:
+                raise Bolt11NoMinFinalCltvException()
 
     def has_expired(self) -> bool:
         if self.expiry is None:
@@ -106,8 +108,12 @@ class Bolt11:
         return self.tags["c"] if "c" in self.tags else 18
 
     @property
+    def has_payment_hash(self) -> bool:
+        return "p" in self.tags
+
+    @property
     def payment_hash(self) -> str:
-        if "p" not in self.tags:
+        if self.has_payment_hash is False:
             raise Bolt11NoPaymentHashException()
         return self.tags["p"]
 
@@ -127,6 +133,10 @@ class Bolt11:
             "date": self.date,
             "signature": self.signature.hex if self.signature else "",
         }
+        if self.has_payment_hash:
+            data["payment_hash"] = self.payment_hash
+        if self.payment_secret:
+            data["payment_secret"] = self.payment_secret
         if self.description:
             data["description"] = self.description
         if self.description_hash:
@@ -145,10 +155,6 @@ class Bolt11:
             ]
         if self.min_final_cltv_expiry:
             data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
-        if self.payment_hash:
-            data["payment_hash"] = self.payment_hash
-        if self.payment_secret:
-            data["payment_secret"] = self.payment_secret
         if self.payee:
             data["payee"] = self.payee
         return data
