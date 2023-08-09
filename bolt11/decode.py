@@ -19,7 +19,7 @@ def _pull_tagged(stream):
     return (CHARSET[tag], stream.read(length * 5), stream)
 
 
-def decode(pr: str) -> Bolt11:
+def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
     """bolt11 decoder,
     based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.py
     """
@@ -94,10 +94,15 @@ def decode(pr: str) -> Bolt11:
     else:
         tags["n"] = signature.recover_public_key()
 
-    return Bolt11(
+    bolt11 = Bolt11(
         currency=currency,
         amount_msat=amount_msat,
         date=timestamp,
         signature=signature,
         tags=tags,
     )
+
+    if not ignore_exceptions:
+        bolt11.validate()
+
+    return bolt11

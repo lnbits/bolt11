@@ -37,6 +37,28 @@ class Bolt11:
     amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
+    def validate(self) -> None:
+        if "p" not in self.tags:
+            raise Bolt11NoPaymentHashException("Missing 'payment_hash'")
+        if "d" in self.tags and "h" in self.tags:
+            raise Bolt11DescriptionException("Cannot include both 'description' and 'description_hash'")
+        if "d" not in self.tags and "h" not in self.tags:
+            raise Bolt11DescriptionException("Must include either 'description' or 'description_hash'")
+
+    def has_expired(self) -> bool:
+        if self.expiry is None:
+            return False
+        return time.time() > self.date + self.expiry
+
+    def is_mainnet(self) -> bool:
+        return self.currency == "bc"
+
+    def is_testnet(self) -> bool:
+        return self.currency == "tb"
+
+    def is_regtest(self) -> bool:
+        return self.currency == "bcrt"
+
     @property
     def description(self) -> Optional[str]:
         return self.tags["d"] if "d" in self.tags else None
@@ -86,47 +108,45 @@ class Bolt11:
         return self.tags["n"] if "n" in self.tags else None
 
     @property
-    def json(self) -> str:
-        json_data = {
+    def data(self) -> dict:
+        data = {
             "currency": self.currency,
             "amount_msat": int(self.amount_msat) if self.amount_msat else 0,
             "date": self.date,
             "signature": self.signature.hex if self.signature else "",
         }
         if self.description:
-            json_data["description"] = self.description
+            data["description"] = self.description
         if self.description_hash:
-            json_data["description_hash"] = self.description_hash
+            data["description_hash"] = self.description_hash
         if self.metadata:
-            json_data["metadata"] = self.metadata
+            data["metadata"] = self.metadata
         if self.expiry:
-            json_data["expiry"] = self.expiry
+            data["expiry"] = self.expiry
         if self.features:
-            json_data["features"] = self.features.readable
+            data["features"] = self.features.readable
         if self.fallback:
-            json_data["fallback"] = self.fallback.address
+            data["fallback"] = self.fallback.address
         if self.route_hints:
-            json_data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
+            data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
         if self.min_final_cltv_expiry:
-            json_data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
+            data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
         if self.payment_hash:
-            json_data["payment_hash"] = self.payment_hash
+            data["payment_hash"] = self.payment_hash
         if self.payment_secret:
-            json_data["payment_secret"] = self.payment_secret
+            data["payment_secret"] = self.payment_secret
         if self.payee:
-            json_data["payee"] = self.payee
-        return json.dumps(json_data)
+            data["payee"] = self.payee
+        return data
 
-    def has_expired(self) -> bool:
-        if self.expiry is None:
-            return False
-        return time.time() > self.date + self.expiry
+    @property
+    def json(self) -> str:
+        return json.dumps(self.data)
 
-    def is_mainnet(self) -> bool:
-        return self.currency == "bc"
 
-    def is_testnet(self) -> bool:
-        return self.currency == "tb"
+class Bolt11NoPaymentHashException(Exception):
+    pass
 
-    def is_regtest(self) -> bool:
-        return self.currency == "bcrt"
+
+class Bolt11DescriptionException(Exception):
+    pass
