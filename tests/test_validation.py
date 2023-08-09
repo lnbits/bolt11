@@ -6,6 +6,8 @@ TODO: multiple f fields not supported yet
             MUST set an f field to a valid witness version and program,
             OR to 17 followed by a public key hash, OR to 18 followed by a script hash.
 """
+from hashlib import sha256
+
 import pytest
 
 from bolt11.decode import decode
@@ -110,11 +112,36 @@ class TestBolt11Validation:
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
                 "d": "description",
-                "h": "6465736372697074696f6e",
+                "h": sha256("description".encode()).hexdigest(),
             },
         )
         with pytest.raises(Bolt11DescriptionException):
             encode(invoice, ex["private_key"])
+
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount_msat=ex["amount_msat"],
+            date=ex["date"],
+            tags={
+                "p": ex["payment_hash"],
+                "s": ex["payment_secret"],
+                "h": sha256("description".encode()).hexdigest(),
+            },
+        )
+        bolt11 = encode(invoice, ex["private_key"])
+        assert bolt11.startswith("lnbc"), "should pass without only desc"
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount_msat=ex["amount_msat"],
+            date=ex["date"],
+            tags={
+                "p": ex["payment_hash"],
+                "s": ex["payment_secret"],
+                "d": "description",
+            },
+        )
+        bolt11 = encode(invoice, ex["private_key"])
+        assert bolt11.startswith("lnbc"), "should pass only description_hash"
 
     def test_validate_strict_encoding(self):
         """
@@ -128,7 +155,7 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "h": "6465736372697074696f6e",
+                "h": sha256("description".encode()).hexdigest(),
             },
         )
         bolt11 = encode(invoice, ex["private_key"])
@@ -137,5 +164,8 @@ class TestBolt11Validation:
         with pytest.raises(Bolt11NoMinFinalCltvException):
             encode(invoice, ex["private_key"], strict=True)
 
+        decoded = decode(bolt11)
+        assert decoded.payment_hash == ex["payment_hash"]
+
         with pytest.raises(Bolt11NoMinFinalCltvException):
-            decode(bolt11, ex["private_key"], strict=True)
+            decode(bolt11, strict=True)
