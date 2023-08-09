@@ -26,11 +26,12 @@ def command_group():
 @click.command()
 @click.argument("bolt11", type=str)
 @click.argument("ignore_exceptions", type=bool, default=True)
-def decode(bolt11, ignore_exceptions):
+@click.argument("strict", type=bool, default=False)
+def decode(bolt11, ignore_exceptions, strict):
     """
     decode a bolt11 invoice
     """
-    decoded = bolt11_decode(bolt11, ignore_exceptions=ignore_exceptions)
+    decoded = bolt11_decode(bolt11, ignore_exceptions=ignore_exceptions, strict=strict)
     click.echo(decoded.json)
 
 
