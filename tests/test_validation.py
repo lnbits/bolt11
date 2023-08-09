@@ -8,6 +8,7 @@ TODO: multiple f fields not supported yet
 """
 import pytest
 
+from bolt11.decode import decode
 from bolt11.encode import encode
 from bolt11.exceptions import (
     Bolt11DescriptionException,
@@ -132,5 +133,9 @@ class TestBolt11Validation:
         )
         bolt11 = encode(invoice, ex["private_key"])
         assert bolt11.startswith("lnbc"), "should pass without strict"
+
         with pytest.raises(Bolt11NoMinFinalCltvException):
             encode(invoice, ex["private_key"], strict=True)
+
+        with pytest.raises(Bolt11NoMinFinalCltvException):
+            decode(bolt11, ex["private_key"], strict=True)

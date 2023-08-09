@@ -53,9 +53,8 @@ class Bolt11:
             raise Bolt11DescriptionException()
         if not self.signature:
             raise Bolt11NoSignatureException()
-        if strict:
-            if "c" not in self.tags:
-                raise Bolt11NoMinFinalCltvException()
+        if strict and "c" not in self.tags:
+            raise Bolt11NoMinFinalCltvException()
 
     def has_expired(self) -> bool:
         if self.expiry is None:
