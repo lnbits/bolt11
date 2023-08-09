@@ -1,3 +1,7 @@
+"""bolt11 decoder,
+based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.py
+"""
+
 from re import match
 from typing import Any, Dict
 
@@ -5,6 +9,11 @@ from bech32 import CHARSET, bech32_decode
 from bitstring import ConstBitStream
 
 from .bit_utils import trim_to_bytes, u5_to_bitarray
+from .exceptions import (
+    Bolt11Bech32InvalidException,
+    Bolt11HrpInvalidException,
+    Bolt11SignatureTooShortException,
+)
 from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
@@ -20,24 +29,21 @@ def _pull_tagged(stream):
 
 
 def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
-    """bolt11 decoder,
-    based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.py
-    """
 
     hrp, bech32_data = bech32_decode(pr)
     if hrp is None or bech32_data is None or hrp.startswith("ln") is None:
-        raise ValueError("Bech32 is not valid")
+        raise Bolt11Bech32InvalidException()
 
     matches = match(r"ln(bcrt|bc|tb)(\w+)?", hrp)
     if matches is None:
-        raise ValueError("Human readable part is not valid.")
+        raise Bolt11HrpInvalidException()
 
     currency, amount_str = matches.groups()
     data = u5_to_bitarray(bech32_data)
 
     # final signature 65 bytes, split it off.
     if len(data) < 65 * 8:
-        raise ValueError("Too short to contain signature")
+        raise Bolt11SignatureTooShortException()
 
     # extract the signature
     signature_data = data[-65 * 8 :].tobytes()
@@ -101,6 +107,11 @@ def decode(pr: str, ignore_exceptions: bool = False) -> Bolt11:
         signature.verify(tags["n"])
     else:
         tags["n"] = signature.recover_public_key()
+
+    # if the c field (min_final_cltv_expiry_delta) is not provided:
+    #    MUST use an expiry delta of at least 18 when making the payment
+    # if "c" not in tags:
+    #     tags["c"] = 18
 
     bolt11 = Bolt11(
         currency=currency,

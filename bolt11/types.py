@@ -5,6 +5,12 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, Optional
 
+from .exceptions import (  # Bolt11NoMinFinalCltvException,
+    Bolt11DescriptionException,
+    Bolt11NoPaymentHashException,
+    Bolt11NoPaymentSecretException,
+    Bolt11NoSignatureException,
+)
 from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
@@ -39,11 +45,15 @@ class Bolt11:
 
     def validate(self) -> None:
         if "p" not in self.tags:
-            raise Bolt11NoPaymentHashException("Missing 'payment_hash'")
-        if "d" in self.tags and "h" in self.tags:
-            raise Bolt11DescriptionException("Cannot include both 'description' and 'description_hash'")
-        if "d" not in self.tags and "h" not in self.tags:
-            raise Bolt11DescriptionException("Must include either 'description' or 'description_hash'")
+            raise Bolt11NoPaymentHashException()
+        if "s" not in self.tags:
+            raise Bolt11NoPaymentSecretException()
+        # if "c" not in self.tags:
+        #     raise Bolt11NoMinFinalCltvException()
+        if "d" in self.tags and "h" in self.tags or "d" not in self.tags and "h" not in self.tags:
+            raise Bolt11DescriptionException()
+        if not self.signature:
+            raise Bolt11NoSignatureException()
 
     def has_expired(self) -> bool:
         if self.expiry is None:
@@ -93,11 +103,13 @@ class Bolt11:
 
     @property
     def min_final_cltv_expiry(self) -> Optional[int]:
-        return self.tags["c"] if "c" in self.tags else 9
+        return self.tags["c"] if "c" in self.tags else 18
 
     @property
-    def payment_hash(self) -> Optional[str]:
-        return self.tags["p"] if "p" in self.tags else None
+    def payment_hash(self) -> str:
+        if "p" not in self.tags:
+            raise Bolt11NoPaymentHashException()
+        return self.tags["p"]
 
     @property
     def payment_secret(self) -> Optional[str]:
@@ -144,11 +156,3 @@ class Bolt11:
     @property
     def json(self) -> str:
         return json.dumps(self.data)
-
-
-class Bolt11NoPaymentHashException(Exception):
-    pass
-
-
-class Bolt11DescriptionException(Exception):
-    pass
