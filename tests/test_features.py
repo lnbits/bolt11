@@ -20,7 +20,10 @@ class TestDecodeFeatures:
                     "yafkq3yap9us6v52vjjsrvywa6rt52cm9r9zqt8r2t7mlcwspyetp5h2tztugp9lfyql"
                 ),
                 {"var_onion_optin": "required", "payment_secret": "required"},
-                {Feature.var_onion_optin: FeatureState.required, Feature.payment_secret: FeatureState.required},
+                {
+                    Feature.var_onion_optin: FeatureState.required,
+                    Feature.payment_secret: FeatureState.required,
+                },
             ),
             (
                 (
@@ -29,7 +32,11 @@ class TestDecodeFeatures:
                     "5hrntdtn6zvydt7d66hyzsyhqs4wdynavys42xgl6sgx9c4g7me86a27t07mdtfry458rtjr0v92cnmswpsjscgt2"
                     "vcse3sgpz3uapa"
                 ),
-                {"var_onion_optin": "required", "payment_secret": "required", "extra_31": "supported"},
+                {
+                    "var_onion_optin": "required",
+                    "payment_secret": "required",
+                    "extra_31": "supported",
+                },
                 {
                     Feature.var_onion_optin: FeatureState.required,
                     Feature.payment_secret: FeatureState.required,
@@ -43,7 +50,11 @@ class TestDecodeFeatures:
                     "gqqqqqqsgq7hf8he7ecf7n4ffphs6awl9t6676rrclv9ckg3d3ncn7fct63p6s365duk5wrk202cfy3aj5xnnp5gs"
                     "3vrdvruverwwq7yzhkf5a3xqpd05wjc"
                 ),
-                {"var_onion_optin": "required", "payment_secret": "required", "extra_6": "required"},
+                {
+                    "var_onion_optin": "required",
+                    "payment_secret": "required",
+                    "extra_6": "required",
+                },
                 {
                     Feature.var_onion_optin: FeatureState.required,
                     Feature.payment_secret: FeatureState.required,

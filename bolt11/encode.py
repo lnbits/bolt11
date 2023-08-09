@@ -82,10 +82,15 @@ def encode(invoice: Bolt11, private_key: Optional[str] = None) -> str:
     hrp = _create_hrp(invoice.currency, invoice.amount_msat)
 
     if private_key:
-        invoice.signature = Signature.from_private_key(private_key, hrp, timestamp + tags)
+        invoice.signature = Signature.from_private_key(
+            private_key, hrp, timestamp + tags
+        )
 
     if not invoice.signature:
         raise ValueError("Must include either 'signature' or 'private_key'")
 
-    encoded = bech32_encode(hrp, bitarray_to_u5(timestamp + tags + BitArray(invoice.signature.signature_data)))
+    encoded = bech32_encode(
+        hrp,
+        bitarray_to_u5(timestamp + tags + BitArray(invoice.signature.signature_data)),
+    )
     return encoded

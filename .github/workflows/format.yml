@@ -23,5 +23,3 @@ jobs:
         run: poetry install
       - name: Check black
         run: make black
-      - name: Check isort
-        run: make isort

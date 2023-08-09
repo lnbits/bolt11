@@ -106,7 +106,9 @@ class Bolt11:
         if self.fallback:
             json_data["fallback"] = self.fallback.address
         if self.route_hints:
-            json_data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
+            json_data["route_hints"] = [
+                route._asdict() for route in self.route_hints.routes
+            ]
         if self.min_final_cltv_expiry:
             json_data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
         if self.payment_hash:
