@@ -1,4 +1,8 @@
-class Bolt11NoPaymentHashException(Exception):
+class Bolt11Exception(Exception):
+    """Parent Exception"""
+
+
+class Bolt11NoPaymentHashException(Bolt11Exception):
     """
     MUST include exactly one p field.
     """
@@ -7,7 +11,7 @@ class Bolt11NoPaymentHashException(Exception):
         super().__init__("Must include 'payment_hash'")
 
 
-class Bolt11NoPaymentSecretException(Exception):
+class Bolt11NoPaymentSecretException(Bolt11Exception):
     """
     MUST include exactly one s field.
     """
@@ -16,7 +20,7 @@ class Bolt11NoPaymentSecretException(Exception):
         super().__init__("Must include 'payment_secret'")
 
 
-class Bolt11NoMinFinalCltvException(Exception):
+class Bolt11NoMinFinalCltvException(Bolt11Exception):
     """
     MUST include one c field (min_final_cltv_expiry_delta).
         MUST set c to the minimum cltv_expiry it will accept
@@ -28,14 +32,14 @@ class Bolt11NoMinFinalCltvException(Exception):
         super().__init__("Must include 'min_final_cltv_expiry_delta'")
 
 
-class Bolt11InvalidDescriptionHashException(Exception):
+class Bolt11InvalidDescriptionHashException(Bolt11Exception):
     """description_hash has to be a valid hex string"""
 
     def __init__(self):
         super().__init__("description_hash has to be a valid hex string")
 
 
-class Bolt11DescriptionException(Exception):
+class Bolt11DescriptionException(Bolt11Exception):
     """
     MUST include either exactly one d or exactly one h field.
         if d is included:
@@ -51,7 +55,7 @@ class Bolt11DescriptionException(Exception):
         super().__init__("Must include either 'description' or 'description_hash', but not both")
 
 
-class Bolt11NoSignatureException(Exception):
+class Bolt11NoSignatureException(Bolt11Exception):
     """
     MUST include signature.
     """
@@ -60,7 +64,7 @@ class Bolt11NoSignatureException(Exception):
         super().__init__("Must include 'signature' or 'private_key'")
 
 
-class Bolt11SignatureTooShortException(Exception):
+class Bolt11SignatureTooShortException(Bolt11Exception):
     """
     Signature is too short.
     """
@@ -69,7 +73,7 @@ class Bolt11SignatureTooShortException(Exception):
         super().__init__("Too short to contain signature")
 
 
-class Bolt11HrpInvalidException(Exception):
+class Bolt11HrpInvalidException(Bolt11Exception):
     """
     Invalid Human Readable Part.
     """
@@ -78,7 +82,7 @@ class Bolt11HrpInvalidException(Exception):
         super().__init__("Human readable part is not valid.")
 
 
-class Bolt11Bech32InvalidException(Exception):
+class Bolt11Bech32InvalidException(Bolt11Exception):
     """
     Invalid Bech32 string.
     """

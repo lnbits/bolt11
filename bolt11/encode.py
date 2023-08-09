@@ -57,8 +57,8 @@ def encode(
     try:
         if invoice.description_hash:
             bytes.fromhex(invoice.description_hash)
-    except Exception:
-        raise Bolt11InvalidDescriptionHashException()
+    except Exception as exc:
+        raise Bolt11InvalidDescriptionHashException() from exc
 
     timestamp = BitArray(uint=invoice.date, length=35)
     tags = BitArray()
