@@ -8,6 +8,7 @@ import click
 
 from .decode import decode as bolt11_decode
 from .encode import encode as bolt11_encode
+from .exceptions import Bolt11Exception
 from .types import Bolt11
 
 # disable tracebacks on exceptions
@@ -37,7 +38,11 @@ def decode(bolt11, ignore_exceptions):
 @click.argument("json_string", type=str)
 @click.argument("ignore_exceptions", type=bool, default=True)
 @click.argument("private_key", type=str, default=None, required=False)
-def encode(json_string, ignore_exceptions: bool = True, private_key: Optional[str] = None):
+def encode(
+    json_string,
+    ignore_exceptions: bool = True,
+    private_key: Optional[str] = None,
+):
     """
     encode a bolt11 invoice
     EXAMPLE:
@@ -58,10 +63,14 @@ def encode(json_string, ignore_exceptions: bool = True, private_key: Optional[st
         return
 
     try:
-        encoded = bolt11_encode(Bolt11(**data), private_key, ignore_exceptions=ignore_exceptions)
+        encoded = bolt11_encode(
+            Bolt11(**data),
+            private_key,
+            ignore_exceptions=ignore_exceptions,
+        )
         click.echo(encoded)
-    except Exception as e:
-        click.echo(e)
+    except Bolt11Exception as exc:
+        click.echo(str(exc))
 
 
 def main():
