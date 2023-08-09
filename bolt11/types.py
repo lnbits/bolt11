@@ -45,16 +45,16 @@ class Bolt11:
     signature: Optional[Signature] = None
 
     def validate(self, strict: bool = False) -> None:
-        if "p" not in self.tags:
+        if not self.tags.get("p"):
             raise Bolt11NoPaymentHashException()
-        if "s" not in self.tags:
+        if not self.tags.get("s"):
             raise Bolt11NoPaymentSecretException()
-        if "d" in self.tags and "h" in self.tags or "d" not in self.tags and "h" not in self.tags:
-            raise Bolt11DescriptionException()
         if not self.signature:
             raise Bolt11NoSignatureException()
         if strict and "c" not in self.tags:
             raise Bolt11NoMinFinalCltvException()
+        if self.tags.get("d") and self.tags.get("h") or not self.tags.get("d") and not self.tags.get("h"):
+            raise Bolt11DescriptionException()
 
     def has_expired(self) -> bool:
         if self.expiry is None:
@@ -72,7 +72,10 @@ class Bolt11:
 
     @property
     def description(self) -> Optional[str]:
-        return self.tags.get("d")
+        if self.description_hash:
+            return None
+        # description could be an empty string
+        return self.tags.get("d") or ""
 
     @property
     def description_hash(self) -> Optional[str]:

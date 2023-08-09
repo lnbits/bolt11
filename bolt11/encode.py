@@ -54,7 +54,6 @@ def encode(
     ignore_exceptions: bool = False,
     strict: bool = False,
 ) -> str:
-
     try:
         if invoice.description_hash:
             bytes.fromhex(invoice.description_hash)

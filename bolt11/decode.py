@@ -33,7 +33,6 @@ def decode(
     ignore_exceptions: bool = False,
     strict: bool = False,
 ) -> Bolt11:
-
     hrp, bech32_data = bech32_decode(pr)
     if hrp is None or bech32_data is None or hrp.startswith("ln") is None:
         raise Bolt11Bech32InvalidException()
