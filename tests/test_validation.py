@@ -18,8 +18,10 @@ ex = {
     "amount_msat": 1000,
     "date": 1496314658,
     "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
-    "payment_secret": "1111111111111111111111111111111111111111111111111111111111111111",
+    "payment_secret": ("1111111111111111111111111111111111111111111111111111111111111111"),
     "private_key": "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734",
+    "description": "Description",
+    "description_hash": sha256("Description".encode()).hexdigest(),
 }
 
 
@@ -39,7 +41,7 @@ class TestBolt11Validation:
             date=ex["date"],
             tags={
                 "s": ex["payment_secret"],
-                "d": "description",
+                "d": ex["description"],
             },
         )
         with pytest.raises(Bolt11NoPaymentHashException):
@@ -55,7 +57,7 @@ class TestBolt11Validation:
             date=ex["date"],
             tags={
                 "p": ex["payment_hash"],
-                "d": "description",
+                "d": ex["description"],
             },
         )
         with pytest.raises(Bolt11NoPaymentSecretException):
@@ -72,8 +74,7 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "d": "description",
-                "h": "description",
+                "h": ex["description"],
             },
         )
         with pytest.raises(Bolt11InvalidDescriptionHashException):
@@ -103,8 +104,8 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "d": "description",
-                "h": sha256("description".encode()).hexdigest(),
+                "d": ex["description"],
+                "h": ex["description_hash"],
             },
         )
         with pytest.raises(Bolt11DescriptionException):
@@ -117,7 +118,7 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "h": sha256("description".encode()).hexdigest(),
+                "h": ex["description_hash"],
             },
         )
         bolt11 = encode(invoice, ex["private_key"])
@@ -129,7 +130,7 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "d": "description",
+                "d": ex["description"],
             },
         )
         bolt11 = encode(invoice, ex["private_key"])
@@ -147,7 +148,7 @@ class TestBolt11Validation:
             tags={
                 "p": ex["payment_hash"],
                 "s": ex["payment_secret"],
-                "h": sha256("description".encode()).hexdigest(),
+                "h": ex["description_hash"],
             },
         )
         bolt11 = encode(invoice, ex["private_key"])
