@@ -1,11 +1,3 @@
-"""
-
-TODO: multiple f fields not supported yet
-    MAY include one or more f fields.
-        for Bitcoin payments:
-            MUST set an f field to a valid witness version and program,
-            OR to 17 followed by a public key hash, OR to 18 followed by a script hash.
-"""
 from hashlib import sha256
 
 import pytest
