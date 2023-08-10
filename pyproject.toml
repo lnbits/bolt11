@@ -14,8 +14,10 @@ packages = [
   {include = "bolt11/py.typed"},
 ]
 
+
 [tool.poetry.scripts]
 bolt11 = "bolt11.cli:main"
+
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
@@ -31,7 +33,7 @@ black = "^23.7.0"
 mypy = "^1.0.0"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
-pyright = "^1.1.320"
+pyright = "^1.1.321"
 pre-commit = "^3.3.3"
 ruff = "^0.0.283"
 
@@ -55,7 +57,7 @@ testpaths = [
 [tool.pyright]
 reportMissingImports = false
 include = [
-    "bolt11"
+    "bolt11",
 ]
 
 
@@ -72,6 +74,7 @@ preview = true
 line-length = 88
 
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+# (`I`) means isorting
 select = ["E", "F", "I"]
 ignore = []
 

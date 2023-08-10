@@ -53,11 +53,12 @@ class Bolt11:
             raise Bolt11NoSignatureException()
         if strict and "c" not in self.tags:
             raise Bolt11NoMinFinalCltvException()
+        # description could be an empty string so self.tags.get is not working here
         if (
-            self.tags.get("d")
-            and self.tags.get("h")
-            or not self.tags.get("d")
-            and not self.tags.get("h")
+            "d" in self.tags
+            and "h" in self.tags
+            or "d" not in self.tags
+            and "h" not in self.tags
         ):
             raise Bolt11DescriptionException()
 
@@ -77,10 +78,7 @@ class Bolt11:
 
     @property
     def description(self) -> Optional[str]:
-        if self.description_hash:
-            return None
-        # description could be an empty string
-        return self.tags.get("d") or ""
+        return self.tags.get("d")
 
     @property
     def description_hash(self) -> Optional[str]:
