@@ -52,7 +52,9 @@ class Bolt11DescriptionException(Bolt11Exception):
     """
 
     def __init__(self):
-        super().__init__("Must include either 'description' or 'description_hash', but not both")
+        super().__init__(
+            "Must include either 'description' or 'description_hash', but not both"
+        )
 
 
 class Bolt11NoSignatureException(Bolt11Exception):

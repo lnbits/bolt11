@@ -53,7 +53,12 @@ class Bolt11:
             raise Bolt11NoSignatureException()
         if strict and "c" not in self.tags:
             raise Bolt11NoMinFinalCltvException()
-        if self.tags.get("d") and self.tags.get("h") or not self.tags.get("d") and not self.tags.get("h"):
+        if (
+            self.tags.get("d")
+            and self.tags.get("h")
+            or not self.tags.get("d")
+            and not self.tags.get("h")
+        ):
             raise Bolt11DescriptionException()
 
     def has_expired(self) -> bool:
@@ -152,9 +157,7 @@ class Bolt11:
         if self.fallback:
             data["fallback"] = self.fallback.address
         if self.route_hints:
-            json_data["route_hints"] = [
-                route._asdict() for route in self.route_hints.routes
-            ]
+            data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
         if self.min_final_cltv_expiry:
             data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
         if self.payee:

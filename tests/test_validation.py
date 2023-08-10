@@ -18,7 +18,9 @@ ex = {
     "amount_msat": 1000,
     "date": 1496314658,
     "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
-    "payment_secret": ("1111111111111111111111111111111111111111111111111111111111111111"),
+    "payment_secret": (
+        "1111111111111111111111111111111111111111111111111111111111111111"
+    ),
     "private_key": "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734",
     "description": "Description",
     "description_hash": sha256("Description".encode()).hexdigest(),
