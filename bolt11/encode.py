@@ -1,6 +1,6 @@
 from typing import Optional
 
-from bech32 import CHARSET, bech32_encode
+from bech32 import bech32_encode, CHARSET
 from bitstring import BitArray, Bits, pack
 
 from .bit_utils import bitarray_to_u5
