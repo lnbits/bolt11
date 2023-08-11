@@ -3,7 +3,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import List, Optional
 
 from .exceptions import (
     Bolt11DescriptionException,
@@ -16,7 +16,11 @@ from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
 from .models.signature import Signature
-from .models.tags import TagChar, Tags
+from .models.tags import (
+    Tag,  # noqa: F401, F403
+    TagChar,
+    Tags,
+)
 
 
 class MilliSatoshi(int):
@@ -111,9 +115,8 @@ class Bolt11:
         return tag.data if tag else None
 
     @property
-    def route_hints(self) -> Optional[RouteHint]:
-        tag = self.tags.get(TagChar.route_hint)
-        return tag.data if tag else None
+    def route_hints(self) -> Optional[List[RouteHint]]:
+        return self.tags.get_route_hints()
 
     @property
     def min_final_cltv_expiry(self) -> int:
@@ -166,7 +169,10 @@ class Bolt11:
         if self.fallback:
             data["fallback"] = self.fallback.address
         if self.route_hints:
-            data["route_hints"] = [route._asdict() for route in self.route_hints.routes]
+            data["route_hints"] = [
+                [route._asdict() for route in route_hint.routes]
+                for route_hint in self.route_hints
+            ]
         if self.min_final_cltv_expiry:
             data["min_final_cltv_expiry"] = self.min_final_cltv_expiry
         if self.payee:

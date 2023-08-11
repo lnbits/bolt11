@@ -6,6 +6,8 @@ from bolt11.models.routehint import RouteHint
 from bolt11.models.tags import Tags
 from bolt11.types import Bolt11
 
+from .helpers import check_decoded_routes
+
 
 class TestBolt11:
     """
@@ -453,7 +455,7 @@ class TestBolt11:
                 "6a6586db4e8f6d40e3a5bb92e4df5110c627e9ce493af237e20a046b4e86ea200178c59564ecf892f33a9558b"
                 "f041b6ad2cb8292d7a6c351fbb7f2ae2d16b54e"
             ),
-            "route_hints": [
+            "route_hints": [[
                 {
                     "public_key": (
                         "029e03a901b85534ff1e92c43c74431f7ce72"
@@ -474,7 +476,7 @@ class TestBolt11:
                     "ppm_fee": 30,
                     "cltv_expiry_delta": 4,
                 },
-            ],
+            ]],
             "private_key": (
                 "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
             ),
@@ -495,15 +497,7 @@ class TestBolt11:
         assert decoded.signature.hex == ex["signature"]
         assert decoded.features
         assert decoded.features.readable == ex["features"]
-        assert decoded.route_hints
-        assert len(decoded.route_hints.routes) == len(ex["route_hints"])
-        for i, route_hint in enumerate(decoded.route_hints.routes):
-            ex_route_hint = ex["route_hints"][i]
-            assert route_hint.public_key == ex_route_hint["public_key"]
-            assert route_hint.short_channel_id == ex_route_hint["short_channel_id"]
-            assert route_hint.base_fee == ex_route_hint["base_fee"]
-            assert route_hint.ppm_fee == ex_route_hint["ppm_fee"]
-            assert route_hint.cltv_expiry_delta == ex_route_hint["cltv_expiry_delta"]
+        check_decoded_routes(decoded.route_hints, ex["route_hints"])
 
         re_encoded = encode(decoded)
         assert re_encoded == ex["payment_request"]
@@ -518,7 +512,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "h": ex["description_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "r": RouteHint.from_list(ex["route_hints"][0]),
                     "n": ex["payee"],
                     "9": Features.from_feature_list(ex["feature_list"]),
                 }
@@ -827,7 +821,7 @@ class TestBolt11:
                 "1b1160cf6186b55722c1ac7ea502086baaccaabdc76b326e666b7f309d972b15069bfca11cd365304b36f4823"
                 "0cc12f3f13a017aab65f7c165a169df32282a58"
             ),
-            "route_hints": [
+            "route_hints": [[
                 {
                     "public_key": (
                         "03d06758583bb5154774a6eb221b1276c9e"
@@ -838,7 +832,7 @@ class TestBolt11:
                     "ppm_fee": 2500,
                     "cltv_expiry_delta": 40,
                 },
-            ],
+            ]],
             "private_key": (
                 "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
             ),
@@ -858,16 +852,7 @@ class TestBolt11:
         assert decoded.signature.hex == ex["signature"]
         assert decoded.features
         assert decoded.features.readable == ex["features"]
-
-        assert decoded.route_hints
-        assert len(decoded.route_hints.routes) == len(ex["route_hints"])
-        for i, route_hint in enumerate(decoded.route_hints.routes):
-            ex_route_hint = ex["route_hints"][i]
-            assert route_hint.public_key == ex_route_hint["public_key"]
-            assert route_hint.short_channel_id == ex_route_hint["short_channel_id"]
-            assert route_hint.base_fee == ex_route_hint["base_fee"]
-            assert route_hint.ppm_fee == ex_route_hint["ppm_fee"]
-            assert route_hint.cltv_expiry_delta == ex_route_hint["cltv_expiry_delta"]
+        check_decoded_routes(decoded.route_hints, ex["route_hints"])
 
         re_encoded = encode(decoded)
         assert re_encoded == ex["payment_request"]
@@ -883,7 +868,7 @@ class TestBolt11:
                     "s": ex["payment_secret"],
                     "x": ex["expiry"],
                     "c": ex["min_final_cltv_expiry"],
-                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "r": RouteHint.from_list(ex["route_hints"][0]),
                     "9": Features.from_feature_list(ex["feature_list"]),
                     "n": ex["payee"],
                 }

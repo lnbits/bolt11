@@ -3,6 +3,8 @@ from typing import Any, List, Optional
 
 from bech32 import CHARSET
 
+from bolt11.models.routehint import RouteHint
+
 
 class TagChar(Enum):
     description = "d"
@@ -56,6 +58,13 @@ class Tags:
             if tag.char == char:
                 return tag
         return None
+
+    def get_route_hints(self) -> List[RouteHint]:
+        routes = []
+        for tag in self.tags:
+            if tag.char == TagChar.route_hint:
+                routes.append(tag.data)
+        return routes
 
     @classmethod
     def from_dict(cls, data: dict) -> "Tags":
