@@ -3,6 +3,7 @@ based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.
 """
 
 from re import match
+from typing import Any, Dict, List
 
 from bech32 import CHARSET, bech32_decode
 from bitstring import ConstBitStream
@@ -170,6 +171,7 @@ def decode(
         date=timestamp,
         signature=signature,
         tags=tags,
+        route_hints=route_hints,
     )
 
     if not ignore_exceptions:
