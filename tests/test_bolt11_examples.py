@@ -512,7 +512,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "h": ex["description_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "r": RouteHint.from_list(ex["route_hints"][0]),
                     "n": ex["payee"],
                     "9": Features.from_feature_list(ex["feature_list"]),
                 }
@@ -868,7 +868,7 @@ class TestBolt11:
                     "s": ex["payment_secret"],
                     "x": ex["expiry"],
                     "c": ex["min_final_cltv_expiry"],
-                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "r": RouteHint.from_list(ex["route_hints"][0]),
                     "9": Features.from_feature_list(ex["feature_list"]),
                     "n": ex["payee"],
                 }

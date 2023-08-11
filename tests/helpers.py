@@ -1,7 +1,12 @@
+from bolt11.models.routehint import RouteHint
+
+
 def check_decoded_routes(decoded_route_hints, example_route_hints):
     assert decoded_route_hints
+    assert isinstance(decoded_route_hints, list)
     assert len(decoded_route_hints) == len(example_route_hints)
     for i, route_hint in enumerate(decoded_route_hints):
+        assert isinstance(route_hint, RouteHint)
         for j, route in enumerate(route_hint.routes):
             ex_route_hint = example_route_hints[i][j]
             assert route.public_key == ex_route_hint["public_key"]
