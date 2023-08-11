@@ -11,6 +11,7 @@ from bolt11.exceptions import (
     Bolt11NoPaymentHashException,
     Bolt11NoPaymentSecretException,
 )
+from bolt11.models.tags import Tags
 from bolt11.types import Bolt11
 
 ex = {
@@ -41,10 +42,12 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "d": ex["description"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "d": ex["description"],
+                }
+            ),
         )
         with pytest.raises(Bolt11NoPaymentHashException):
             encode(invoice, ex["private_key"])
@@ -57,10 +60,12 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                }
+            ),
         )
         with pytest.raises(Bolt11NoPaymentSecretException):
             encode(invoice, ex["private_key"])
@@ -73,11 +78,13 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-                "h": ex["description"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "h": ex["description"],
+                }
+            ),
         )
         with pytest.raises(Bolt11InvalidDescriptionHashException):
             encode(invoice, ex["private_key"])
@@ -91,10 +98,12 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                }
+            ),
         )
         with pytest.raises(Bolt11DescriptionException):
             encode(invoice, ex["private_key"])
@@ -103,12 +112,14 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-                "d": ex["description"],
-                "h": ex["description_hash"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "d": ex["description"],
+                    "h": ex["description_hash"],
+                }
+            ),
         )
         with pytest.raises(Bolt11DescriptionException):
             encode(invoice, ex["private_key"])
@@ -117,11 +128,13 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                }
+            ),
         )
         bolt11 = encode(invoice, ex["private_key"])
         assert bolt11.startswith("lnbc"), "should pass without only desc"
@@ -129,11 +142,13 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-                "d": ex["description"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "d": ex["description"],
+                }
+            ),
         )
         bolt11 = encode(invoice, ex["private_key"])
         assert bolt11.startswith("lnbc"), "should pass only description_hash"
@@ -147,11 +162,13 @@ class TestBolt11Validation:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                }
+            ),
         )
         bolt11 = encode(invoice, ex["private_key"])
         assert bolt11.startswith("lnbc"), "should pass without strict"
