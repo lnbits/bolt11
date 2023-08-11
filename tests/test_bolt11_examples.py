@@ -3,6 +3,7 @@ from bolt11.encode import encode
 from bolt11.models.fallback import Fallback
 from bolt11.models.features import Feature, FeatureExtra, Features, FeatureState
 from bolt11.models.routehint import RouteHint
+from bolt11.models.tags import Tags
 from bolt11.types import Bolt11
 
 
@@ -75,13 +76,15 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -149,14 +152,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "x": ex["expiry"],
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "x": ex["expiry"],
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -226,14 +231,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "x": ex["expiry"],
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "x": ex["expiry"],
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -304,13 +311,15 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "p": ex["payment_hash"],
-                "h": ex["description_hash"],
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "p": ex["payment_hash"],
+                    "h": ex["description_hash"],
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -384,14 +393,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-                "p": ex["payment_hash"],
-                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                    "p": ex["payment_hash"],
+                    "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -501,15 +512,17 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "p": ex["payment_hash"],
-                "h": ex["description_hash"],
-                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                "r": RouteHint.from_list(ex["route_hints"]),
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "p": ex["payment_hash"],
+                    "h": ex["description_hash"],
+                    "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -583,14 +596,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-                "p": ex["payment_hash"],
-                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                    "p": ex["payment_hash"],
+                    "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -665,14 +680,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-                "p": ex["payment_hash"],
-                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                    "p": ex["payment_hash"],
+                    "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -749,14 +766,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "s": ex["payment_secret"],
-                "h": ex["description_hash"],
-                "p": ex["payment_hash"],
-                "f": Fallback.from_address(ex["fallback"], ex["currency"]),
-                "n": ex["payee"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-            },
+            tags=Tags.from_dict(
+                {
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                    "p": ex["payment_hash"],
+                    "f": Fallback.from_address(ex["fallback"], ex["currency"]),
+                    "n": ex["payee"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -857,16 +876,18 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "s": ex["payment_secret"],
-                "x": ex["expiry"],
-                "c": ex["min_final_cltv_expiry"],
-                "r": RouteHint.from_list(ex["route_hints"]),
-                "9": Features.from_feature_list(ex["feature_list"]),
-                "n": ex["payee"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "s": ex["payment_secret"],
+                    "x": ex["expiry"],
+                    "c": ex["min_final_cltv_expiry"],
+                    "r": RouteHint.from_list(ex["route_hints"]),
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "n": ex["payee"],
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -937,13 +958,15 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "s": ex["payment_secret"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-                "n": ex["payee"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "s": ex["payment_secret"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "n": ex["payee"],
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -1012,13 +1035,15 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "s": ex["payment_secret"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-                "n": ex["payee"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "s": ex["payment_secret"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "n": ex["payee"],
+                }
+            ),
         )
 
         encoded = encode(invoice, ex["private_key"])
@@ -1153,14 +1178,16 @@ class TestBolt11:
             currency=ex["currency"],
             amount_msat=ex["amount_msat"],
             date=ex["date"],
-            tags={
-                "p": ex["payment_hash"],
-                "d": ex["description"],
-                "m": ex["metadata"],
-                "s": ex["payment_secret"],
-                "9": Features.from_feature_list(ex["feature_list"]),
-                "n": ex["payee"],
-            },
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "d": ex["description"],
+                    "m": ex["metadata"],
+                    "s": ex["payment_secret"],
+                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "n": ex["payee"],
+                }
+            ),
         )
         encoded = encode(invoice, ex["private_key"])
         assert encoded == ex["payment_request"]

@@ -3,8 +3,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from .exceptions import (
     Bolt11DescriptionException,
@@ -17,6 +16,7 @@ from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
 from .models.signature import Signature
+from .models.tags import TagChar, Tags
 
 
 class MilliSatoshi(int):
@@ -35,51 +35,30 @@ class MilliSatoshi(int):
         return self // 1000
 
 
-class TagChar(Enum):
-    description = "d"
-    descipriton_hash = "h"
-    payee = "n"
-    fallback = "f"
-    route_hint = "r"
-    expire_time = "x"
-    min_final_cltv_expiry = "c"
-
-
-class Tag:
-    char: TagChar
-    data: Any
-
-
-class Tags:
-    tags: List[Tag]
-    data: Any
-
-
 @dataclass
 class Bolt11:
     """Bolt11 Lightning invoice."""
 
     currency: str
     date: int
-    tags: List[Tag]
+    tags: Tags
     amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
     def validate(self, strict: bool = False) -> None:
-        if not self.tags.get("p"):
+        if not self.tags.get(TagChar.payment_hash):
             raise Bolt11NoPaymentHashException()
-        if not self.tags.get("s"):
+        if not self.tags.get(TagChar.payment_secret):
             raise Bolt11NoPaymentSecretException()
         if not self.signature:
             raise Bolt11NoSignatureException()
-        if strict and "c" not in self.tags:
+        if strict and not self.tags.get(TagChar.min_final_cltv_expiry):
             raise Bolt11NoMinFinalCltvException()
-        # description could be an empty string so self.tags.get is not working here
         if (
-            "d" in self.tags
-            and "h" in self.tags
-            or "d" not in self.tags
-            and "h" not in self.tags
+            self.tags.get(TagChar.description)
+            and self.tags.get(TagChar.description_hash)
+            or not self.tags.get(TagChar.description)
+            and not self.tags.get(TagChar.description_hash)
         ):
             raise Bolt11DescriptionException()
 
@@ -99,15 +78,18 @@ class Bolt11:
 
     @property
     def description(self) -> Optional[str]:
-        return self.tags.get("d")
+        tag = self.tags.get(TagChar.description)
+        return tag.data if tag else None
 
     @property
     def description_hash(self) -> Optional[str]:
-        return self.tags.get("h")
+        tag = self.tags.get(TagChar.description_hash)
+        return tag.data if tag else None
 
     @property
     def metadata(self) -> Optional[str]:
-        return self.tags.get("m")
+        tag = self.tags.get(TagChar.metadata)
+        return tag.data if tag else None
 
     @property
     def dt(self) -> datetime:
@@ -115,41 +97,49 @@ class Bolt11:
 
     @property
     def expiry(self) -> Optional[int]:
-        return self.tags.get("x")
+        tag = self.tags.get(TagChar.expire_time)
+        return tag.data if tag else None
 
     @property
     def features(self) -> Optional[Features]:
-        return self.tags.get("9")
+        tag = self.tags.get(TagChar.features)
+        return tag.data if tag else None
 
     @property
     def fallback(self) -> Optional[Fallback]:
-        return self.tags.get("f")
+        tag = self.tags.get(TagChar.fallback)
+        return tag.data if tag else None
 
     @property
     def route_hints(self) -> Optional[RouteHint]:
-        return self.tags.get("r")
+        tag = self.tags.get(TagChar.route_hint)
+        return tag.data if tag else None
 
     @property
-    def min_final_cltv_expiry(self) -> Optional[int]:
-        return self.tags.get("c", 18)
+    def min_final_cltv_expiry(self) -> int:
+        tag = self.tags.get(TagChar.min_final_cltv_expiry)
+        return tag.data if tag else 18
 
     @property
     def has_payment_hash(self) -> bool:
-        return "p" in self.tags
+        return self.tags.get(TagChar.payment_hash) is not None
 
     @property
     def payment_hash(self) -> str:
-        if self.has_payment_hash is False:
+        payment_hash = self.tags.get(TagChar.payment_hash)
+        if not payment_hash:
             raise Bolt11NoPaymentHashException()
-        return self.tags["p"]
+        return payment_hash.data
 
     @property
     def payment_secret(self) -> Optional[str]:
-        return self.tags.get("s")
+        tag = self.tags.get(TagChar.payment_secret)
+        return tag.data if tag else None
 
     @property
     def payee(self) -> Optional[str]:
-        return self.tags.get("n")
+        tag = self.tags.get(TagChar.payee)
+        return tag.data if tag else None
 
     @property
     def data(self) -> dict:

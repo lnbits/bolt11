@@ -66,6 +66,15 @@ class Bolt11NoSignatureException(Bolt11Exception):
         super().__init__("Must include 'signature' or 'private_key'")
 
 
+class Bolt11SignatureVerifyException(Bolt11Exception):
+    """
+    If payee is included, signature MUST be valid for payee.
+    """
+
+    def __init__(self):
+        super().__init__("Included `payee` could not be verified")
+
+
 class Bolt11SignatureTooShortException(Bolt11Exception):
     """
     Signature is too short.

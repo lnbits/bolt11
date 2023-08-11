@@ -3,7 +3,6 @@ based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.
 """
 
 from re import match
-from typing import Any, Dict
 
 from bech32 import CHARSET, bech32_decode
 from bitstring import ConstBitStream
@@ -13,11 +12,13 @@ from .exceptions import (
     Bolt11Bech32InvalidException,
     Bolt11HrpInvalidException,
     Bolt11SignatureTooShortException,
+    Bolt11SignatureVerifyException,
 )
 from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
 from .models.signature import Signature
+from .models.tags import TagChar, Tags
 from .types import Bolt11
 from .utils import amount_to_msat
 
@@ -59,7 +60,7 @@ def decode(
 
     timestamp = data_part.read(35).uint  # type: ignore
 
-    tags: Dict[str, Any] = {}
+    tags = Tags()
 
     while data_part.pos != data_part.len:
         tag, tagdata, data_part = _pull_tagged(data_part)
@@ -67,35 +68,80 @@ def decode(
 
         # MUST skip over unknown fields, OR an f field with unknown version, OR p, h,
         # s or n fields that do NOT have data_lengths of 52, 52, 52 or 53, respectively.
-
-        if tag == "p" and data_length == 52 and not hasattr(tags, "p"):
-            tags["p"] = trim_to_bytes(tagdata).hex()  # type: ignore
-        elif (
-            tag == "h"
+        if (
+            tag == TagChar.payment_hash.value
             and data_length == 52
-            and not hasattr(tags, "h")
-            and not hasattr(tags, "d")
+            and not tags.has(TagChar.payment_hash)
         ):
-            tags["h"] = trim_to_bytes(tagdata).hex()  # type: ignore
-        elif tag == "s" and data_length == 52 and not hasattr(tags, "s"):
-            tags["s"] = trim_to_bytes(tagdata).hex()  # type: ignore
-        elif tag == "n" and data_length == 53 and not hasattr(tags, "n"):
-            tags["n"] = trim_to_bytes(tagdata).hex()  # type: ignore
-
-        elif tag == "d" and not hasattr(tags, "d") and not hasattr(tags, "h"):
-            tags["d"] = trim_to_bytes(tagdata).decode()  # type: ignore
-        elif tag == "m":
-            tags["m"] = trim_to_bytes(tagdata).hex()  # type: ignore
-        elif tag == "x":
-            tags["x"] = tagdata.uint  # type: ignore
-        elif tag == "c":
-            tags["c"] = tagdata.uint  # type: ignore
-        elif tag == "f":
-            tags["f"] = Fallback.from_bitstring(tagdata, currency)  # type: ignore
-        elif tag == "9":
-            tags["9"] = Features.from_bitstring(tagdata)  # type: ignore
-        elif tag == "r":
-            tags["r"] = RouteHint.from_bitstring(tagdata)  # type: ignore
+            tags.add(
+                TagChar.payment_hash,
+                trim_to_bytes(tagdata).hex(),  # type: ignore
+            )
+        elif (
+            tag == TagChar.description_hash.value
+            and data_length == 52
+            and not tags.has(TagChar.description_hash)
+            and not tags.has(TagChar.description)
+        ):
+            tags.add(
+                TagChar.description_hash,
+                trim_to_bytes(tagdata).hex(),  # type: ignore
+            )
+        elif (
+            tag == TagChar.payment_secret.value
+            and data_length == 52
+            and not tags.has(TagChar.payment_secret)
+        ):
+            tags.add(
+                TagChar.payment_secret,
+                trim_to_bytes(tagdata).hex(),  # type: ignore
+            )
+        elif (
+            tag == TagChar.payee.value
+            and data_length == 53
+            and not tags.has(TagChar.payee)
+        ):
+            tags.add(
+                TagChar.payee,
+                trim_to_bytes(tagdata).hex(),  # type: ignore
+            )
+        elif (
+            tag == TagChar.description.value
+            and not tags.has(TagChar.description)
+            and not tags.has(TagChar.description_hash)
+        ):
+            tags.add(
+                TagChar.description,
+                trim_to_bytes(tagdata).decode(),  # type: ignore
+            )
+        elif tag == TagChar.metadata.value and not tags.has(TagChar.metadata):
+            tags.add(
+                TagChar.metadata,
+                trim_to_bytes(tagdata).hex(),  # type: ignore
+            )
+        elif tag == TagChar.expire_time.value and not tags.has(TagChar.expire_time):
+            tags.add(
+                TagChar.expire_time,
+                tagdata.uint,  # type: ignore
+            )
+        elif tag == TagChar.min_final_cltv_expiry.value and not tags.has(
+            TagChar.min_final_cltv_expiry
+        ):
+            tags.add(
+                TagChar.min_final_cltv_expiry,
+                tagdata.uint,  # type: ignore
+            )
+        elif tag == TagChar.fallback.value and not tags.has(TagChar.fallback):
+            tags.add(
+                TagChar.fallback,
+                Fallback.from_bitstring(tagdata, currency),  # type: ignore
+            )
+        elif tag == TagChar.features.value and not tags.has(TagChar.features):
+            tags.add(TagChar.features, Features.from_bitstring(tagdata))  # type: ignore
+        elif tag == TagChar.route_hint.value:
+            tags.add(
+                TagChar.route_hint, RouteHint.from_bitstring(tagdata)  # type: ignore
+            )
 
     signature = Signature(
         signature_data=signature_data,
@@ -105,11 +151,18 @@ def decode(
     # A reader MUST check that the `signature` is valid (see the `n` tagged field
     # specified below). A reader MUST use the `n` field to validate the signature
     # instead of performing signature recovery if a valid `n` field is provided.
-    if hasattr(tags, "n"):
+    payee = tags.get(TagChar.payee)
+    if payee:
         # TODO: research why no test runs this?
-        signature.verify(tags["n"])
+        try:
+            signature.verify(payee.data)
+        except Exception as exc:
+            raise Bolt11SignatureVerifyException() from exc
     else:
-        tags["n"] = signature.recover_public_key()
+        tags.add(
+            TagChar.payee,
+            signature.recover_public_key(),
+        )
 
     bolt11 = Bolt11(
         currency=currency,
