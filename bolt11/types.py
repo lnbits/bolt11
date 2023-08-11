@@ -3,7 +3,8 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, Optional
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
 from .exceptions import (
     Bolt11DescriptionException,
@@ -34,13 +35,33 @@ class MilliSatoshi(int):
         return self // 1000
 
 
+class TagChar(Enum):
+    description = "d"
+    descipriton_hash = "h"
+    payee = "n"
+    fallback = "f"
+    route_hint = "r"
+    expire_time = "x"
+    min_final_cltv_expiry = "c"
+
+
+class Tag:
+    char: TagChar
+    data: Any
+
+
+class Tags:
+    tags: List[Tag]
+    data: Any
+
+
 @dataclass
 class Bolt11:
     """Bolt11 Lightning invoice."""
 
     currency: str
     date: int
-    tags: Dict[str, Any]
+    tags: List[Tag]
     amount_msat: Optional[MilliSatoshi] = None
     signature: Optional[Signature] = None
 
