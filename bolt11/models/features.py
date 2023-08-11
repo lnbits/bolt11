@@ -23,12 +23,12 @@ class Feature(Enum):
     option_support_large_channel = 9
     option_anchor_outputs = 10
     option_anchors_zero_fee_htlc_tx = 11
-    option_route_blinding = 13
-    option_shutdown_anysegwit = 14
-    option_channel_type = 15
-    option_scid_alias = 16
-    option_payment_metadata = 17
-    option_zeroconf_chanids = 18
+    option_route_blinding = 12
+    option_shutdown_anysegwit = 13
+    option_channel_type = 14
+    option_scid_alias = 15
+    option_payment_metadata = 16
+    option_zeroconf = 17
 
 
 class FeatureExtra:
