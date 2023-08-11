@@ -6,10 +6,10 @@ black:
 	poetry run black --preview .
 
 ruff:
-	poetry run ruff check .
-
-ruff-fix:
 	poetry run ruff check . --fix
+
+checkruff:
+	poetry run ruff check .
 
 mypy:
 	poetry run mypy .
