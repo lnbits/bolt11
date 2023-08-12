@@ -65,7 +65,7 @@ include = [
 line-length = 88
 
 # previously experimental-string-processing = true
-# this should autoformat string poperly but does not work
+# this should autoformat string properly but does not work
 preview = true
 
 
