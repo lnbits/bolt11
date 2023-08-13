@@ -35,10 +35,7 @@ class RouteHint(NamedTuple):
 
     @classmethod
     def from_list(cls, list_of_routes: List[dict]) -> "RouteHint":
-        routes = []
-        for route in list_of_routes:
-            routes.append(Route(**route))
-        return cls(routes=routes)
+        return cls(routes=[Route(**route) for route in list_of_routes])
 
     @property
     def data(self) -> Bits:
