@@ -455,28 +455,30 @@ class TestBolt11:
                 "6a6586db4e8f6d40e3a5bb92e4df5110c627e9ce493af237e20a046b4e86ea200178c59564ecf892f33a9558b"
                 "f041b6ad2cb8292d7a6c351fbb7f2ae2d16b54e"
             ),
-            "route_hints": [[
-                {
-                    "public_key": (
-                        "029e03a901b85534ff1e92c43c74431f7ce72"
-                        "046060fcf7a95c37e148f78c77255"
-                    ),
-                    "short_channel_id": "66051x263430x1800",
-                    "base_fee": 1,
-                    "ppm_fee": 20,
-                    "cltv_expiry_delta": 3,
-                },
-                {
-                    "public_key": (
-                        "039e03a901b85534ff1e92c43c74431f7ce"
-                        "72046060fcf7a95c37e148f78c77255"
-                    ),
-                    "short_channel_id": "197637x395016x2314",
-                    "base_fee": 2,
-                    "ppm_fee": 30,
-                    "cltv_expiry_delta": 4,
-                },
-            ]],
+            "route_hints": [
+                [
+                    {
+                        "public_key": (
+                            "029e03a901b85534ff1e92c43c74431f7ce72"
+                            "046060fcf7a95c37e148f78c77255"
+                        ),
+                        "short_channel_id": "66051x263430x1800",
+                        "base_fee": 1,
+                        "ppm_fee": 20,
+                        "cltv_expiry_delta": 3,
+                    },
+                    {
+                        "public_key": (
+                            "039e03a901b85534ff1e92c43c74431f7ce"
+                            "72046060fcf7a95c37e148f78c77255"
+                        ),
+                        "short_channel_id": "197637x395016x2314",
+                        "base_fee": 2,
+                        "ppm_fee": 30,
+                        "cltv_expiry_delta": 4,
+                    },
+                ]
+            ],
             "private_key": (
                 "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
             ),
@@ -821,18 +823,20 @@ class TestBolt11:
                 "1b1160cf6186b55722c1ac7ea502086baaccaabdc76b326e666b7f309d972b15069bfca11cd365304b36f4823"
                 "0cc12f3f13a017aab65f7c165a169df32282a58"
             ),
-            "route_hints": [[
-                {
-                    "public_key": (
-                        "03d06758583bb5154774a6eb221b1276c9e"
-                        "82d65bbaceca806d90e20c108f4b1c7"
-                    ),
-                    "short_channel_id": "589390x3312x1",
-                    "base_fee": 1000,
-                    "ppm_fee": 2500,
-                    "cltv_expiry_delta": 40,
-                },
-            ]],
+            "route_hints": [
+                [
+                    {
+                        "public_key": (
+                            "03d06758583bb5154774a6eb221b1276c9e"
+                            "82d65bbaceca806d90e20c108f4b1c7"
+                        ),
+                        "short_channel_id": "589390x3312x1",
+                        "base_fee": 1000,
+                        "ppm_fee": 2500,
+                        "cltv_expiry_delta": 40,
+                    },
+                ]
+            ],
             "private_key": (
                 "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
             ),

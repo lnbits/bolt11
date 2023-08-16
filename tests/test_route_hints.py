@@ -17,14 +17,10 @@ ex = {
         "uadrrq8w2x3xnl9759cfv3mekg9yw6xvttq9gmh3a2ak4pal0nskkpzt5m8ylaqchze4"
         "tmmlcpdxypch"
     ),
-    "private_key": (
-        "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
-    ),
+    "private_key": "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734",
     "currency": "bc",
     "date": 1496314658,
-    "payment_hash": (
-        "0001020304050607080900010203040506070809000102030405060708090102"
-    ),
+    "payment_hash": "0001020304050607080900010203040506070809000102030405060708090102",
     "payment_secret": (
         "1111111111111111111111111111111111111111111111111111111111111111"
     ),
@@ -32,64 +28,65 @@ ex = {
     "description_hash": (
         "3925b6f67e2c340036ed12093dd44e0368df1b6ea26c53dbe4811f58fd5db8c1"
     ),
-    "route_hints": [[
-        {
-            "public_key": (
-                "029e03a901b85534ff1e92c43c74431f7ce72"
-                "046060fcf7a95c37e148f78c77255"
-            ),
-            "short_channel_id": "66051x263430x1800",
-            "base_fee": 1,
-            "ppm_fee": 20,
-            "cltv_expiry_delta": 3,
-        },
-        {
-            "public_key": (
-                "039e03a901b85534ff1e92c43c74431f7ce"
-                "72046060fcf7a95c37e148f78c77255"
-            ),
-            "short_channel_id": "197637x395016x2314",
-            "base_fee": 2,
-            "ppm_fee": 30,
-            "cltv_expiry_delta": 4,
-        },
-    ],[
-        {
-            "public_key": (
-                "029e03a901b85534ff1e92c43c74431f7ce72"
-                "046060fcf7a95c37e148f78c77255"
-            ),
-            "short_channel_id": "66051x263430x1800",
-            "base_fee": 42,
-            "ppm_fee": 21,
-            "cltv_expiry_delta": 3,
-        },
-        {
-            "public_key": (
-                "039e03a901b85534ff1e92c43c74431f7ce"
-                "72046060fcf7a95c37e148f78c77255"
-            ),
-            "short_channel_id": "197637x395016x2314",
-            "base_fee": 666,
-            "ppm_fee": 21,
-            "cltv_expiry_delta": 4,
-        },
-    ]],
-    }
+    "route_hints": [
+        [
+            {
+                "public_key": (
+                    "029e03a901b85534ff1e92c43c74431f7ce72046060fcf7a95c37e148f78c77255"
+                ),
+                "short_channel_id": "66051x263430x1800",
+                "base_fee": 1,
+                "ppm_fee": 20,
+                "cltv_expiry_delta": 3,
+            },
+            {
+                "public_key": (
+                    "039e03a901b85534ff1e92c43c74431f7ce72046060fcf7a95c37e148f78c77255"
+                ),
+                "short_channel_id": "197637x395016x2314",
+                "base_fee": 2,
+                "ppm_fee": 30,
+                "cltv_expiry_delta": 4,
+            },
+        ],
+        [
+            {
+                "public_key": (
+                    "029e03a901b85534ff1e92c43c74431f7ce72046060fcf7a95c37e148f78c77255"
+                ),
+                "short_channel_id": "66051x263430x1800",
+                "base_fee": 42,
+                "ppm_fee": 21,
+                "cltv_expiry_delta": 3,
+            },
+            {
+                "public_key": (
+                    "039e03a901b85534ff1e92c43c74431f7ce72046060fcf7a95c37e148f78c77255"
+                ),
+                "short_channel_id": "197637x395016x2314",
+                "base_fee": 666,
+                "ppm_fee": 21,
+                "cltv_expiry_delta": 4,
+            },
+        ],
+    ],
+}
 
 
 class TestRouteHints:
-    """ Test Route hints """
+    """Test Route hints"""
 
     def test_route_hint_unordered(self):
         """
         Test route hints passed with Bolt11(route_hints)
         """
-        tags = Tags([
-            Tag(TagChar.payment_secret, ex["payment_secret"]),
-            Tag(TagChar.payment_hash, ex["payment_hash"]),
-            Tag(TagChar.description_hash, ex["description_hash"]),
-        ])
+        tags = Tags(
+            [
+                Tag(TagChar.payment_secret, ex["payment_secret"]),
+                Tag(TagChar.payment_hash, ex["payment_hash"]),
+                Tag(TagChar.description_hash, ex["description_hash"]),
+            ]
+        )
 
         for route_hint in ex["route_hints"]:
             tags.add(TagChar.route_hint, RouteHint.from_list(route_hint))

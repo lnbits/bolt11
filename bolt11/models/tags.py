@@ -60,15 +60,8 @@ class Tags:
         return None
 
     def get_route_hints(self) -> List[RouteHint]:
-        routes = []
-        for tag in self.tags:
-            if tag.char == TagChar.route_hint:
-                routes.append(tag.data)
-        return routes
+        return [tag.data for tag in self.tags if tag.char == TagChar.route_hint]
 
     @classmethod
     def from_dict(cls, data: dict) -> "Tags":
-        tags = []
-        for char, value in data.items():
-            tags.append(Tag(TagChar(char), value))
-        return cls(tags)
+        return cls([Tag(TagChar(char), value) for char, value in data.items()])
