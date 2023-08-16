@@ -4,6 +4,7 @@ import pytest
 
 from bolt11.bit_utils import int_to_scid, scid_to_int
 from bolt11.compat import shorten_amount, unshorten_amount
+from bolt11.exceptions import Bolt11AmountInvalidException
 from bolt11.utils import amount_to_btc, amount_to_sat, btc_to_amount, sat_to_amount
 
 
@@ -62,5 +63,5 @@ class TestAmounts:
 
     @pytest.mark.parametrize("amount", ["123x", "1f0"])
     def test_invalid_amount(self, amount):
-        with pytest.raises(ValueError):
+        with pytest.raises(Bolt11AmountInvalidException):
             amount_to_btc(amount)

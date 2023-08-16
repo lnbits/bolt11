@@ -2,15 +2,13 @@
 based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.py
 """
 
-from re import match
-
 from bech32 import CHARSET, bech32_decode
 from bitstring import ConstBitStream
 
 from .bit_utils import trim_to_bytes, u5_to_bitarray
 from .exceptions import (
     Bolt11Bech32InvalidException,
-    Bolt11HrpInvalidException,
+    Bolt11PrefixInvalidException,
     Bolt11SignatureTooShortException,
     Bolt11SignatureVerifyException,
 )
@@ -20,7 +18,7 @@ from .models.routehint import RouteHint
 from .models.signature import Signature
 from .models.tags import TagChar, Tags
 from .types import Bolt11
-from .utils import amount_to_msat
+from .utils import verify_hrp
 
 
 def _pull_tagged(stream):
@@ -34,15 +32,16 @@ def decode(
     ignore_exceptions: bool = False,
     strict: bool = False,
 ) -> Bolt11:
+    pr = pr.lower()
+
+    if not pr.startswith("ln"):
+        raise Bolt11PrefixInvalidException()
+
     hrp, bech32_data = bech32_decode(pr)
-    if hrp is None or bech32_data is None or hrp.startswith("ln") is None:
+    if hrp is None or bech32_data is None:
         raise Bolt11Bech32InvalidException()
 
-    matches = match(r"ln(bcrt|bc|tb)(\w+)?", hrp)
-    if matches is None:
-        raise Bolt11HrpInvalidException()
-
-    currency, amount_str = matches.groups()
+    currency, amount_msat = verify_hrp(hrp)
     data = u5_to_bitarray(bech32_data)
 
     # final signature 65 bytes, split it off.
@@ -54,9 +53,6 @@ def decode(
 
     # the tagged fields as a bitstream
     data_part = ConstBitStream(data[: -65 * 8])
-
-    # decode the amount from the hrp
-    amount_msat = amount_to_msat(amount_str) if amount_str else None
 
     timestamp = data_part.read(35).uint  # type: ignore
 
