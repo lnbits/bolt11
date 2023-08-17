@@ -93,22 +93,22 @@ class Bolt11PrefixInvalidException(Bolt11Exception):
         super().__init__("Invalid Prefix, bolt11 should start with `ln`.")
 
 
-class Bolt11AmountInvalidException(Bolt11Exception):
+class Bolt11HrpInvalidException(Bolt11Exception):
+    """
+    Invalid Human Readable Part.
+    """
+
+    def __init__(self, message="Human readable part is not valid."):
+        super().__init__(message)
+
+
+class Bolt11AmountInvalidException(Bolt11HrpInvalidException):
     """
     Invalid shortened amount
     """
 
     def __init__(self):
         super().__init__("Invalid shortened amount.")
-
-
-class Bolt11HrpInvalidException(Bolt11Exception):
-    """
-    Invalid Human Readable Part.
-    """
-
-    def __init__(self):
-        super().__init__("Human readable part is not valid.")
 
 
 class Bolt11Bech32InvalidException(Bolt11Exception):
