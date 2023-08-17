@@ -15,6 +15,7 @@ jobs:
           pypi_token: ${{ secrets.PYPI_API_KEY }}
 
       - name: Create github release
+        id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
