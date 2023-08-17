@@ -29,7 +29,7 @@ def command_group():
 @click.argument("features_hex", type=str)
 def decode_features(features_hex):
     """
-    decode features hex
+    decode features encoded as hex
     """
     decoded = Features.from_bitstring(Bits(hex=features_hex))
     click.echo(decoded.json)
