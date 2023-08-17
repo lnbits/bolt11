@@ -84,15 +84,6 @@ class Bolt11SignatureTooShortException(Bolt11Exception):
         super().__init__("Too short to contain signature")
 
 
-class Bolt11PrefixInvalidException(Bolt11Exception):
-    """
-    Invalid Prefix, bolt11 should start with `ln`.
-    """
-
-    def __init__(self):
-        super().__init__("Invalid Prefix, bolt11 should start with `ln`.")
-
-
 class Bolt11HrpInvalidException(Bolt11Exception):
     """
     Invalid Human Readable Part.

@@ -8,7 +8,6 @@ from bitstring import ConstBitStream
 from .bit_utils import trim_to_bytes, u5_to_bitarray
 from .exceptions import (
     Bolt11Bech32InvalidException,
-    Bolt11PrefixInvalidException,
     Bolt11SignatureTooShortException,
     Bolt11SignatureVerifyException,
 )
@@ -33,9 +32,6 @@ def decode(
     strict: bool = False,
 ) -> Bolt11:
     pr = pr.lower()
-
-    if not pr.startswith("ln"):
-        raise Bolt11PrefixInvalidException()
 
     hrp, bech32_data = bech32_decode(pr)
     if hrp is None or bech32_data is None:
