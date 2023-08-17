@@ -3,6 +3,7 @@ from typing import Any, List, Optional
 
 from bech32 import CHARSET
 
+from bolt11.models.features import Features
 from bolt11.models.routehint import RouteHint
 
 
@@ -64,4 +65,16 @@ class Tags:
 
     @classmethod
     def from_dict(cls, data: dict) -> "Tags":
-        return cls([Tag(TagChar(char), value) for char, value in data.items()])
+        tags = []
+        for char, value in data.items():
+            if char in ["currency", "amount_msat", "date", "signature"]:
+                continue
+            elif char == TagChar.features.name or char == TagChar.features.value:
+                tags.append(Tag(TagChar.features, Features.from_dict(value)))
+            elif char in TagChar._member_map_:
+                tags.append(Tag(TagChar._member_map_.get(char), value))  # type: ignore
+            elif char in TagChar._value2member_map_:
+                tags.append(Tag(TagChar(char), value))
+            else:
+                raise ValueError(f"invalid tag char: {char}")
+        return cls(tags)

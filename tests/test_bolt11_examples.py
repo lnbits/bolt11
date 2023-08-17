@@ -1,7 +1,6 @@
 from bolt11.decode import decode
 from bolt11.encode import encode
 from bolt11.models.fallback import Fallback
-from bolt11.models.features import Feature, FeatureExtra, Features, FeatureState
 from bolt11.models.routehint import RouteHint
 from bolt11.models.tags import Tags
 from bolt11.types import Bolt11
@@ -44,10 +43,6 @@ class TestBolt11:
                 "var_onion_optin": "required",
                 "payment_secret": "required",
             },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-            },
             "signature": (
                 "8d3ce9e28357337f62da0162d9454df827f83cfe499aeb1c1db349d4d81127425e434ca29929406c23bba1ae8"
                 "ac6ca32880b38d4bf6ff874024cac34ba9625f1"
@@ -80,11 +75,11 @@ class TestBolt11:
             date=ex["date"],
             tags=Tags.from_dict(
                 {
-                    "s": ex["payment_secret"],
-                    "p": ex["payment_hash"],
-                    "d": ex["description"],
-                    "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "payment_secret": ex["payment_secret"],
+                    "payment_hash": ex["payment_hash"],
+                    "description": ex["description"],
+                    "payee": ex["payee"],
+                    "features": ex["features"],
                 }
             ),
         )
@@ -120,10 +115,6 @@ class TestBolt11:
                 "var_onion_optin": "required",
                 "payment_secret": "required",
             },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-            },
             "signature": (
                 "e59e3ffbd3945e4334879158d31e89b076dff54f3fa7979ae79df2db9dcaf5896cbfe1a478b8d2307e92c8813"
                 "9464cb7e6ef26e414c4abe33337961ddc5e8ab1"
@@ -156,12 +147,12 @@ class TestBolt11:
             date=ex["date"],
             tags=Tags.from_dict(
                 {
-                    "s": ex["payment_secret"],
-                    "p": ex["payment_hash"],
-                    "d": ex["description"],
-                    "x": ex["expiry"],
-                    "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "payment_secret": ex["payment_secret"],
+                    "payment_hash": ex["payment_hash"],
+                    "description": ex["description"],
+                    "expire_time": ex["expiry"],
+                    "payee": ex["payee"],
+                    "features": ex["features"],
                 }
             ),
         )
@@ -198,10 +189,6 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
             },
             "signature": (
                 "bae41ef385e0fc972977c7ea42b12cbd76577d2412919da8a8a22f9577b6507710c0e96dd78c821dea1645303"
@@ -240,7 +227,7 @@ class TestBolt11:
                     "d": ex["description"],
                     "x": ex["expiry"],
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -279,10 +266,6 @@ class TestBolt11:
                 "var_onion_optin": "required",
                 "payment_secret": "required",
             },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-            },
             "signature": (
                 "f67a5f696648fa4fb102e1a07b230e54722f8e024cee71e80b4847ac191da3fb2d2cdb28cc32344d7e9a9cf5c"
                 "9b6a0ee0582ae46e9938b9c81e344a4dbb5289d"
@@ -319,7 +302,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "h": ex["description_hash"],
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -358,10 +341,6 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
             },
             "signature": (
                 "6ca95a74dc32e69ced6175b15a5cc56a92bf19f5dace0f134b7d94d464b9f5cf6090a18d48b243f289394d17b"
@@ -402,7 +381,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -446,10 +425,6 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
             },
             "signature": (
                 "6a6586db4e8f6d40e3a5bb92e4df5110c627e9ce493af237e20a046b4e86ea200178c59564ecf892f33a9558b"
@@ -516,7 +491,7 @@ class TestBolt11:
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
                     "r": RouteHint.from_list(ex["route_hints"][0]),
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -555,10 +530,6 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
             },
             "signature": (
                 "16810439d1a9bfd5a65acc61340dc92448bb2d456a80b58ce012b73cb5202438020500c9ab7ef5573a4d174c8"
@@ -599,7 +570,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -640,10 +611,6 @@ class TestBolt11:
                 "var_onion_optin": "required",
                 "payment_secret": "required",
             },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-            },
             "signature": (
                 "5a8bd7b97c1cc9055ee60cf2356621f8752248e037a953886a1782b44a58f5ff2d94e6bc89b7b514541a3603b"
                 "b33722b6c08aa1a3639d34becc549a99fea6eae"
@@ -683,7 +650,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -726,10 +693,6 @@ class TestBolt11:
                 "var_onion_optin": "required",
                 "payment_secret": "required",
             },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-            },
             "signature": (
                 "2b3ec248f80301a421817369194f012cdd8af8df1c279981420f9e901e20fa3309d791e11355e609b59ce4a22"
                 "0852a0cd55ab862b1785a83b206c90fa74d01c8"
@@ -769,7 +732,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "f": Fallback.from_address(ex["fallback"], ex["currency"]),
                     "n": ex["payee"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                 }
             ),
         )
@@ -814,10 +777,6 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
             },
             "signature": (
                 "1b1160cf6186b55722c1ac7ea502086baaccaabdc76b326e666b7f309d972b15069bfca11cd365304b36f4823"
@@ -873,7 +832,7 @@ class TestBolt11:
                     "x": ex["expiry"],
                     "c": ex["min_final_cltv_expiry"],
                     "r": RouteHint.from_list(ex["route_hints"][0]),
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                     "n": ex["payee"],
                 }
             ),
@@ -911,12 +870,7 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-                "extra_31": "supported",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-                FeatureExtra(31): FeatureState.supported,
+                "extra_49": "supported",
             },
             "signature": (
                 "5755469bf4b8e6b6ae7a1308d5f9bad5c82812e0855cd24fac242aa323fa820c5c551ede4faeabcb7fb6d5a46"
@@ -952,7 +906,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "d": ex["description"],
                     "s": ex["payment_secret"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                     "n": ex["payee"],
                 }
             ),
@@ -988,12 +942,7 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-                "extra_31": "supported",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-                FeatureExtra(31): FeatureState.supported,
+                "extra_49": "supported",
             },
             "signature": (
                 "5755469bf4b8e6b6ae7a1308d5f9bad5c82812e0855cd24fac242aa323fa820c5c551ede4faeabcb7fb6d5a46"
@@ -1029,7 +978,7 @@ class TestBolt11:
                     "p": ex["payment_hash"],
                     "d": ex["description"],
                     "s": ex["payment_secret"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                     "n": ex["payee"],
                 }
             ),
@@ -1072,12 +1021,7 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-                "extra_31": "supported",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-                FeatureExtra(31): FeatureState.supported,
+                "extra_49": "supported",
             },
             "signature": (
                 "150a5252308f25bc2641a186de87470189bb003774326beee33b9a2a720d1584386631c5dda6fc3"
@@ -1130,12 +1074,7 @@ class TestBolt11:
             "features": {
                 "var_onion_optin": "required",
                 "payment_secret": "required",
-                "extra_6": "required",
-            },
-            "feature_list": {
-                Feature.var_onion_optin: FeatureState.required,
-                Feature.payment_secret: FeatureState.required,
-                FeatureExtra(6): FeatureState.required,
+                "extra_24": "required",
             },
             "signature": (
                 "f5d27be7d9c27d3aa521bc35d77cabd6bda18f1f61716445b19e27e4e17a887508ea8de5a8e1d94f561248f65"
@@ -1173,7 +1112,7 @@ class TestBolt11:
                     "d": ex["description"],
                     "m": ex["metadata"],
                     "s": ex["payment_secret"],
-                    "9": Features.from_feature_list(ex["feature_list"]),
+                    "9": ex["features"],
                     "n": ex["payee"],
                 }
             ),

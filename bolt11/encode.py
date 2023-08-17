@@ -18,7 +18,7 @@ from .utils import msat_to_amount
 def _tagged(char: int, bits: Bits):
     # Tagged fields need to be zero-padded to 5 bits.
     while bits.len % 5 != 0:
-        bits.append("0b0")  # type: ignore
+        bits = bits + "0b0"
     return (
         pack(
             "uint:5, uint:5, uint:5",

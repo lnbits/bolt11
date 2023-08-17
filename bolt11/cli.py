@@ -5,11 +5,13 @@ import sys
 from typing import Optional
 
 import click
+from bitstring import Bits
 
 from .decode import decode as bolt11_decode
 from .encode import encode as bolt11_encode
 from .exceptions import Bolt11Exception
-from .types import Bolt11
+from .models.features import Features
+from .types import Bolt11, Tags
 
 # disable tracebacks on exceptions
 sys.tracebacklimit = 0
@@ -21,6 +23,16 @@ def command_group():
     Python CLI for BOLT11 invoices
     decode bolt11 invoices
     """
+
+
+@click.command()
+@click.argument("features_hex", type=str)
+def decode_features(features_hex):
+    """
+    decode features encoded as hex
+    """
+    decoded = Features.from_bitstring(Bits(hex=features_hex))
+    click.echo(decoded.json)
 
 
 @click.command()
@@ -53,8 +65,12 @@ def encode(
         "currency": "bc",
         "amount_msat": 1000,
         "date": 1590000000,
-        "tags": {
-            "d": "description"
+        "description": "description",
+        "expiry": 3600,
+        "min_final_cltv_expiry": 9,
+        "features": {
+            "var_onion_optin": "required",
+            "payment_secret": "required"
         }
     }
     private_key: e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734
@@ -67,7 +83,12 @@ def encode(
 
     try:
         encoded = bolt11_encode(
-            Bolt11(**data),
+            Bolt11(
+                currency=data.get("currency"),
+                amount_msat=data.get("amount_msat"),
+                date=data.get("date"),
+                tags=Tags.from_dict(data),
+            ),
             private_key,
             ignore_exceptions=ignore_exceptions,
             strict=strict,
@@ -80,6 +101,7 @@ def encode(
 def main():
     """main function"""
     command_group.add_command(decode)
+    command_group.add_command(decode_features)
     command_group.add_command(encode)
     command_group()
 
