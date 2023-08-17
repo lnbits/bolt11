@@ -10,8 +10,8 @@ def verify_hrp(hrp: str) -> tuple[str, Optional[MilliSatoshi]]:
     matches = match(r"ln(bcrt|bc|tbs|tb)(\w+)?", hrp)
     if matches is None:
         raise Bolt11HrpInvalidException()
-    curreny, amount_str = matches.groups()
-    return curreny, amount_to_msat(amount_str) if amount_str else None
+    currency, amount_str = matches.groups()
+    return currency, amount_to_msat(amount_str) if amount_str else None
 
 
 def amount_to_msat(amount: str) -> MilliSatoshi:
