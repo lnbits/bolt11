@@ -50,13 +50,13 @@ def decode(
     # the tagged fields as a bitstream
     data_part = ConstBitStream(data[: -65 * 8])
 
-    timestamp = data_part.read(35).uint  # type: ignore
+    timestamp = data_part.read(35).uint
 
     tags = Tags()
 
     while data_part.pos != data_part.len:
         tag, tagdata, data_part = _pull_tagged(data_part)
-        data_length = len(tagdata or []) / 5  # type: ignore
+        data_length = int(len(tagdata or []) / 5)
 
         # MUST skip over unknown fields, OR an f field with unknown version, OR p, h,
         # s or n fields that do NOT have data_lengths of 52, 52, 52 or 53, respectively.
@@ -67,7 +67,7 @@ def decode(
         ):
             tags.add(
                 TagChar.payment_hash,
-                trim_to_bytes(tagdata).hex(),  # type: ignore
+                trim_to_bytes(tagdata).hex(),
             )
         elif (
             tag == TagChar.description_hash.value
@@ -77,7 +77,7 @@ def decode(
         ):
             tags.add(
                 TagChar.description_hash,
-                trim_to_bytes(tagdata).hex(),  # type: ignore
+                trim_to_bytes(tagdata).hex(),
             )
         elif (
             tag == TagChar.payment_secret.value
@@ -86,7 +86,7 @@ def decode(
         ):
             tags.add(
                 TagChar.payment_secret,
-                trim_to_bytes(tagdata).hex(),  # type: ignore
+                trim_to_bytes(tagdata).hex(),
             )
         elif (
             tag == TagChar.payee.value
@@ -95,7 +95,7 @@ def decode(
         ):
             tags.add(
                 TagChar.payee,
-                trim_to_bytes(tagdata).hex(),  # type: ignore
+                trim_to_bytes(tagdata).hex(),
             )
         elif (
             tag == TagChar.description.value
@@ -104,36 +104,34 @@ def decode(
         ):
             tags.add(
                 TagChar.description,
-                trim_to_bytes(tagdata).decode(),  # type: ignore
+                trim_to_bytes(tagdata).decode(),
             )
         elif tag == TagChar.metadata.value and not tags.has(TagChar.metadata):
             tags.add(
                 TagChar.metadata,
-                trim_to_bytes(tagdata).hex(),  # type: ignore
+                trim_to_bytes(tagdata).hex(),
             )
         elif tag == TagChar.expire_time.value and not tags.has(TagChar.expire_time):
             tags.add(
                 TagChar.expire_time,
-                tagdata.uint,  # type: ignore
+                tagdata.uint,
             )
         elif tag == TagChar.min_final_cltv_expiry.value and not tags.has(
             TagChar.min_final_cltv_expiry
         ):
             tags.add(
                 TagChar.min_final_cltv_expiry,
-                tagdata.uint,  # type: ignore
+                tagdata.uint,
             )
         elif tag == TagChar.fallback.value and not tags.has(TagChar.fallback):
             tags.add(
                 TagChar.fallback,
-                Fallback.from_bitstring(tagdata, currency),  # type: ignore
+                Fallback.from_bitstring(tagdata, currency),
             )
         elif tag == TagChar.features.value and not tags.has(TagChar.features):
-            tags.add(TagChar.features, Features.from_bitstring(tagdata))  # type: ignore
+            tags.add(TagChar.features, Features.from_bitstring(tagdata))
         elif tag == TagChar.route_hint.value:
-            tags.add(
-                TagChar.route_hint, RouteHint.from_bitstring(tagdata)  # type: ignore
-            )
+            tags.add(TagChar.route_hint, RouteHint.from_bitstring(tagdata))
 
     signature = Signature(
         signature_data=signature_data,

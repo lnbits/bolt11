@@ -65,7 +65,7 @@ class Features(NamedTuple):
             feature_index = floor(i / 2)
             si = i + 1
             cut = data[-si : -si + 1] if i > 0 else data[-si:]
-            if bool(cut):
+            if cut == "0b1":
                 feature: Union[Feature, FeatureExtra] = (
                     Feature(feature_index)
                     if feature_index < len(Feature)
@@ -84,9 +84,9 @@ class Features(NamedTuple):
         data = BitArray(length=length)
         for feature, feature_state in feature_list.items():
             if feature_state == FeatureState.required:
-                data.invert(feature.value * 2)  # type: ignore
+                data.invert(feature.value * 2)
             elif feature_state == FeatureState.supported:
-                data.invert(feature.value * 2 + 1)  # type: ignore
+                data.invert(feature.value * 2 + 1)
             else:
                 raise ValueError("Unknown feature state")
         # Remove trailing zeroes
@@ -94,8 +94,8 @@ class Features(NamedTuple):
             data = BitArray(data[:-1])
         # add zeroes
         while data.len % 5 != 0:
-            data.append("0b0")  # type: ignore
-        data.reverse()  # type: ignore
+            data = data + "0b0"
+        data.reverse()
         return cls(data, feature_list)
 
     @property

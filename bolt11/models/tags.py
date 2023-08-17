@@ -72,7 +72,9 @@ class Tags:
             elif char == TagChar.features.name or char == TagChar.features.value:
                 tags.append(Tag(TagChar.features, Features.from_dict(value)))
             elif char in TagChar._member_map_:
-                tags.append(Tag(TagChar._member_map_.get(char), value))  # type: ignore
+                member_char = TagChar._member_map_.get(char)
+                assert member_char, "member char should not be None after check"
+                tags.append(Tag(TagChar(member_char), value))
             elif char in TagChar._value2member_map_:
                 tags.append(Tag(TagChar(char), value))
             else:
