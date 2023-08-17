@@ -118,3 +118,9 @@ class Bolt11Bech32InvalidException(Bolt11Exception):
 
     def __init__(self):
         super().__init__("Bech32 string is not valid.")
+
+
+class Bolt11FeatureException(Exception):
+    """
+    FeatureExtra has to be bigger than defined Extras
+    """

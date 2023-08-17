@@ -1,8 +1,11 @@
+import json
 from enum import Enum
 from math import floor
 from typing import Dict, NamedTuple, Optional, Union
 
 from bitstring import BitArray, Bits
+
+from bolt11.exceptions import Bolt11FeatureException
 
 
 class FeatureState(Enum):
@@ -33,15 +36,19 @@ class Feature(Enum):
 
 class FeatureExtra:
     def __init__(self, index: int):
+        if index < len(Feature):
+            raise Bolt11FeatureException(
+                f"FeatureExtra must be greater than {len(Feature) - 1}"
+            )
         self.feature_index = index
 
     @property
     def value(self) -> int:
-        return self.feature_index + len(Feature)
+        return self.feature_index
 
     @property
     def name(self) -> str:
-        return f"extra_{self.feature_index - len(Feature)}"
+        return f"extra_{self.feature_index}"
 
 
 class Features(NamedTuple):
@@ -50,6 +57,8 @@ class Features(NamedTuple):
 
     @classmethod
     def from_bitstring(cls, data: Bits) -> "Features":
+        while data.len % 5 != 0:
+            data = data + "0b0"
         length = data.length
         feature_list: Dict[Union[Feature, FeatureExtra], FeatureState] = {}
         for i in range(0, length):
@@ -95,6 +104,27 @@ class Features(NamedTuple):
         for feature, feature_state in self.feature_list.items():
             json[feature.name] = feature_state.name
         return json
+
+    @property
+    def json(self) -> str:
+        return json.dumps(self.readable)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Features":
+        features: Dict[Union[Feature, FeatureExtra], FeatureState] = {}
+        for char, value in data.items():
+            if char in Feature._member_map_:
+                features[Feature(Feature._member_map_.get(char))] = FeatureState(
+                    FeatureState._member_map_.get(value)
+                )
+            else:
+                if not char.startswith("extra_"):
+                    raise ValueError(f"invalid feature char: {char}")
+                extra_bit = int(char.replace("extra_", ""))
+                features[FeatureExtra(extra_bit)] = FeatureState(
+                    FeatureState._member_map_.get(value)
+                )
+        return cls.from_feature_list(features)
 
     def has_feature(self, feature_string: str) -> Optional[str]:
         for feature, feature_state in self.feature_list.items():
