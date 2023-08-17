@@ -67,12 +67,7 @@ class Tags:
     def from_dict(cls, data: dict) -> "Tags":
         tags = []
         for char, value in data.items():
-            if (
-                char == "currency"
-                or char == "amount_msat"
-                or char == "date"
-                or char == "signature"
-            ):
+            if char in ["currency", "amount_msat", "date", "signature"]:
                 continue
             elif char == TagChar.features.name or char == TagChar.features.value:
                 tags.append(Tag(TagChar.features, Features.from_dict(value)))
