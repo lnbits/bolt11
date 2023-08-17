@@ -1,8 +1,17 @@
 from decimal import Decimal
-from re import fullmatch
-from typing import Union
+from re import fullmatch, match
+from typing import Optional, Union
 
+from .exceptions import Bolt11AmountInvalidException, Bolt11HrpInvalidException
 from .types import MilliSatoshi
+
+
+def verify_hrp(hrp: str) -> tuple[str, Optional[MilliSatoshi]]:
+    matches = match(r"ln(bcrt|bc|tbs|tb)(\w+)?", hrp)
+    if matches is None:
+        raise Bolt11HrpInvalidException()
+    curreny, amount_str = matches.groups()
+    return curreny, amount_to_msat(amount_str) if amount_str else None
 
 
 def amount_to_msat(amount: str) -> MilliSatoshi:
@@ -11,7 +20,7 @@ def amount_to_msat(amount: str) -> MilliSatoshi:
     # A reader SHOULD fail if `amount` contains a non-digit, or is followed by
     # anything except a `multiplier` in the table above.
     if not fullmatch(r"\d+[pnum]?", amount):
-        raise ValueError(f"Invalid amount `{amount}`")
+        raise Bolt11AmountInvalidException()
 
     try:
         num = {"p": 10**12, "n": 10**9, "u": 10**6, "m": 10**3}[amount[-1]]
