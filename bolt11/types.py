@@ -77,6 +77,9 @@ class Bolt11:
     def is_testnet(self) -> bool:
         return self.currency == "tb"
 
+    def is_signet(self) -> bool:
+        return self.currency == "tbs"
+
     def is_regtest(self) -> bool:
         return self.currency == "bcrt"
 
