@@ -23,9 +23,12 @@ bolt11 = "bolt11.cli:main"
 python = "^3.8.1"
 base58 = "^2.1.1"
 bech32 = "^1.2.0"
-bitstring = "^3"
+bitstring = "^4.1.0"
 ecdsa = "^0.18.0"
 secp256k1 = "^0.14.0"
+pyright = "^1.1.323"
+click = "^8.1.7"
+mypy = "^1.5.1"
 
 
 [tool.poetry.group.dev.dependencies]

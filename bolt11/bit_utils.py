@@ -21,7 +21,7 @@ def bitarray_to_u5(barr):
     ret = []
     s = ConstBitStream(barr)
     while s.pos != s.len:
-        ret.append(s.read(5).uint)  # type: ignore
+        ret.append(s.read(5).uint)
     return ret
 
 

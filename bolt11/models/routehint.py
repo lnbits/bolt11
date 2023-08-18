@@ -4,8 +4,6 @@ from bitstring import BitArray, Bits, ConstBitStream, pack
 
 from ..bit_utils import int_to_scid, scid_to_int
 
-# from ..types import MilliSatoshi
-
 
 class Route(NamedTuple):
     public_key: str
@@ -22,13 +20,13 @@ class RouteHint(NamedTuple):
     def from_bitstring(cls, data: Bits) -> "RouteHint":
         stream = ConstBitStream(data)
         route_hints = []
-        while stream.pos + 264 + 64 + 32 + 32 + 16 < stream.len:  # type: ignore
+        while stream.pos + 264 + 64 + 32 + 32 + 16 < stream.len:
             route = Route(
-                public_key=stream.read(264).tobytes().hex(),  # type: ignore
-                short_channel_id=int_to_scid(stream.read(64).intbe),  # type: ignore
-                base_fee=stream.read(32).intbe,  # type: ignore
-                ppm_fee=stream.read(32).intbe,  # type: ignore
-                cltv_expiry_delta=stream.read(16).intbe,  # type: ignore
+                public_key=stream.read(264).tobytes().hex(),
+                short_channel_id=int_to_scid(stream.read(64).intbe),
+                base_fee=stream.read(32).intbe,
+                ppm_fee=stream.read(32).intbe,
+                cltv_expiry_delta=stream.read(16).intbe,
             )
             route_hints.append(route)
         return cls(routes=route_hints)
@@ -47,6 +45,6 @@ class RouteHint(NamedTuple):
                 + pack("intbe:32", route.base_fee)
                 + pack("intbe:32", route.ppm_fee)
                 + pack("intbe:16", route.cltv_expiry_delta)
-            )  # type: ignore
+            )
 
         return route_hints

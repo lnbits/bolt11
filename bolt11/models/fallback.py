@@ -26,7 +26,7 @@ class Fallback(NamedTuple):
     @classmethod
     def from_bitstring(cls, data: Bits, currency) -> Optional["Fallback"]:
         # fallback address type 19 are ignored
-        wver = data[0:5].uint  # type: ignore
+        wver = data[0:5].uint
         if wver == 19:
             return None
         return cls(data, currency)
@@ -83,4 +83,4 @@ class Fallback(NamedTuple):
 
     @property
     def witness_version(self) -> int:
-        return self.data[0:5].uint  # type: ignore
+        return self.data[0:5].uint
