@@ -1,23 +1,21 @@
 import pytest
 
-from bolt11.decode import decode
 from bolt11.exceptions import (
     Bolt11AmountInvalidException,
     Bolt11HrpInvalidException,
-    Bolt11PrefixInvalidException,
 )
 from bolt11.utils import verify_hrp
 
 
-class TestInvalidPrefix:
+class TestInvalidHrp:
     @pytest.mark.parametrize(
-        "prefix",
-        ["nl", "lln", "10ln"],
+        "hrp",
+        ["nl", "lln", "10ln", "lnbcu"],
     )
-    def test_invalid_prefix(self, prefix):
+    def test_invalid_prefix(self, hrp):
         # Invalid Prefix, bolt11 should start with `ln`.
-        with pytest.raises(Bolt11PrefixInvalidException):
-            decode(prefix)
+        with pytest.raises(Bolt11HrpInvalidException):
+            verify_hrp(hrp)
 
 
 class TestVerifyHrp:
