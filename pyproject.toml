@@ -20,13 +20,13 @@ bolt11 = "bolt11.cli:main"
 
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
-base58 = "^2.1.1"
-bech32 = "^1.2.0"
-bitstring = "^4.1.0 || ^3"
-ecdsa = "^0.18.0"
-secp256k1 = "^0.14.0"
-click = "^8.1.7"
+python = ">=3.8.1"
+click = "*"
+base58 = "*"
+ecdsa = "*"
+secp256k1 = "*"
+bech32 = "*"
+bitstring = "*"
 
 
 [tool.poetry.group.dev.dependencies]
