@@ -16,11 +16,7 @@ from .models.fallback import Fallback
 from .models.features import Features
 from .models.routehint import RouteHint
 from .models.signature import Signature
-from .models.tags import (
-    Tag,  # noqa: F401, F403
-    TagChar,
-    Tags,
-)
+from .models.tags import TagChar, Tags
 
 
 class MilliSatoshi(int):
@@ -98,8 +94,13 @@ class Bolt11:
         tag = self.tags.get(TagChar.metadata)
         return tag.data if tag else None
 
+    # backwards compatibility
     @property
     def dt(self) -> datetime:
+        return self.date_time
+
+    @property
+    def date_time(self) -> datetime:
         return datetime.fromtimestamp(self.date)
 
     @property
@@ -112,6 +113,12 @@ class Bolt11:
         if not self.expiry:
             return None
         return datetime.fromtimestamp(self.date + self.expiry)
+
+    @property
+    def expiry_time(self) -> Optional[int]:
+        if not self.expiry:
+            return None
+        return self.date + self.expiry
 
     @property
     def features(self) -> Optional[Features]:
