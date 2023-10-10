@@ -2,8 +2,7 @@ from hashlib import sha256
 
 import pytest
 
-from bolt11.decode import decode
-from bolt11.encode import encode
+from bolt11 import Bolt11, Tags, decode, encode
 from bolt11.exceptions import (
     Bolt11DescriptionException,
     Bolt11InvalidDescriptionHashException,
@@ -11,8 +10,6 @@ from bolt11.exceptions import (
     Bolt11NoPaymentHashException,
     Bolt11NoPaymentSecretException,
 )
-from bolt11.models.tags import Tags
-from bolt11.types import Bolt11
 
 ex = {
     "currency": "bc",

@@ -1,4 +1,4 @@
-from bolt11.models.routehint import RouteHint
+from bolt11 import RouteHint
 
 
 def check_decoded_routes(decoded_route_hints, example_route_hints):
