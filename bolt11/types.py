@@ -108,6 +108,12 @@ class Bolt11:
         return tag.data if tag else None
 
     @property
+    def expiry_date(self) -> Optional[datetime]:
+        if not self.expiry:
+            return None
+        return datetime.fromtimestamp(self.date + self.expiry)
+
+    @property
     def features(self) -> Optional[Features]:
         tag = self.tags.get(TagChar.features)
         return tag.data if tag else None
