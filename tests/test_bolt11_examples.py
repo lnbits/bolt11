@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from bolt11.decode import decode
 from bolt11.encode import encode
 from bolt11.models.fallback import Fallback
@@ -127,7 +129,11 @@ class TestBolt11:
         decoded = decode(ex["payment_request"])
         assert decoded.currency == ex["currency"]
         assert decoded.date == ex["date"]
+        assert decoded.dt == datetime.fromtimestamp(ex["date"])
+        assert decoded.date_time == datetime.fromtimestamp(ex["date"])
         assert decoded.expiry == ex["expiry"]
+        assert decoded.expiry_date == datetime.fromtimestamp(ex["date"] + ex["expiry"])
+        assert decoded.expiry_time == ex["date"] + ex["expiry"]
         assert decoded.payment_hash == ex["payment_hash"]
         assert decoded.payment_secret == ex["payment_secret"]
         assert decoded.amount_msat == ex["amount_msat"]

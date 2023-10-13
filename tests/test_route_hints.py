@@ -1,6 +1,4 @@
-from bolt11.decode import decode
-from bolt11.encode import encode
-from bolt11.types import Bolt11, RouteHint, Tag, TagChar, Tags
+from bolt11 import Bolt11, RouteHint, Tag, TagChar, Tags, decode, encode
 
 from .helpers import check_decoded_routes
 
