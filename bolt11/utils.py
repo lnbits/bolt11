@@ -1,6 +1,6 @@
 from decimal import Decimal
 from re import fullmatch, match
-from typing import Optional, Union, Tuple
+from typing import Optional, Tuple, Union
 
 from .exceptions import Bolt11AmountInvalidException, Bolt11HrpInvalidException
 from .types import MilliSatoshi
