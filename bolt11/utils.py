@@ -1,12 +1,12 @@
 from decimal import Decimal
 from re import fullmatch, match
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 
 from .exceptions import Bolt11AmountInvalidException, Bolt11HrpInvalidException
 from .types import MilliSatoshi
 
 
-def verify_hrp(hrp: str) -> tuple[str, Optional[MilliSatoshi]]:
+def verify_hrp(hrp: str) -> Tuple[str, Optional[MilliSatoshi]]:
     matches = match(r"ln(bcrt|bc|tbs|tb)(\w+)?", hrp)
     if matches is None:
         raise Bolt11HrpInvalidException()
