@@ -63,8 +63,6 @@ class Bolt11:
             raise Bolt11DescriptionException()
 
     def has_expired(self) -> bool:
-        if self.expiry is None:
-            return False
         return time.time() > self.date + self.expiry
 
     def is_mainnet(self) -> bool:
@@ -104,20 +102,18 @@ class Bolt11:
         return datetime.fromtimestamp(self.date)
 
     @property
-    def expiry(self) -> Optional[int]:
+    def expiry(self) -> int:
         tag = self.tags.get(TagChar.expire_time)
-        return tag.data if tag else None
+        if not tag:
+            return 3600
+        return tag.data
 
     @property
-    def expiry_date(self) -> Optional[datetime]:
-        if not self.expiry:
-            return None
+    def expiry_date(self) -> datetime:
         return datetime.fromtimestamp(self.date + self.expiry)
 
     @property
-    def expiry_time(self) -> Optional[int]:
-        if not self.expiry:
-            return None
+    def expiry_time(self) -> int:
         return self.date + self.expiry
 
     @property
@@ -167,6 +163,7 @@ class Bolt11:
             "amount_msat": int(self.amount_msat) if self.amount_msat else 0,
             "date": self.date,
             "signature": self.signature.hex if self.signature else "",
+            "expiry": self.expiry,
         }
         if self.has_payment_hash:
             data["payment_hash"] = self.payment_hash
@@ -178,8 +175,6 @@ class Bolt11:
             data["description_hash"] = self.description_hash
         if self.metadata:
             data["metadata"] = self.metadata
-        if self.expiry:
-            data["expiry"] = self.expiry
         if self.features:
             data["features"] = self.features.readable
         if self.fallback:
