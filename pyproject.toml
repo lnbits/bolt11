@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bolt11"
-version = "2.0.5"
+version = "2.0.6"
 description = "A library for encoding and decoding BOLT11 payment requests."
 repository = "https://github.com/lnbits/bolt11"
 authors = [
