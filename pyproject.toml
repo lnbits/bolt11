@@ -24,7 +24,7 @@ python = ">=3.8.1"
 click = "*"
 base58 = "*"
 ecdsa = "*"
-secp256k1 = "*"
+coincurve = "*"
 bech32 = "*"
 bitstring = "*"
 

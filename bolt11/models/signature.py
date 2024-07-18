@@ -3,9 +3,9 @@ from hashlib import sha256
 from typing import Optional
 
 from bitstring import Bits
+from coincurve import PrivateKey
 from ecdsa import SECP256k1, VerifyingKey
 from ecdsa.util import sigdecode_string
-from secp256k1 import PrivateKey
 
 
 @dataclass
@@ -19,12 +19,10 @@ class Signature:
     def from_private_key(
         cls, private_key: str, hrp: str, signing_data: Bits
     ) -> "Signature":
-        key = PrivateKey(bytes.fromhex(private_key))
-        sig = key.ecdsa_sign_recoverable(
+        key: PrivateKey = PrivateKey.from_hex(private_key)
+        signature_data = key.sign_recoverable(
             bytearray([ord(c) for c in hrp]) + signing_data.tobytes()
         )
-        sig, recid = key.ecdsa_recoverable_serialize(sig)
-        signature_data = bytes(sig) + bytes([recid])
         return cls(signing_data=signing_data.tobytes(), signature_data=signature_data)
 
     def verify(self, payee: str) -> bool:
