@@ -1152,6 +1152,7 @@ class TestBolt11:
         assert decoded.description == ex["description"]
         assert decoded.payee == ex["payee"]
         assert decoded.signature
+        assert decoded.signature.recover_public_key() == ex["payee"]
 
         re_encoded = encode(decoded, keep_payee=True)
         assert re_encoded == ex["payment_request"]

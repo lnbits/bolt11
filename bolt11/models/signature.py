@@ -3,7 +3,7 @@ from hashlib import sha256
 from typing import Optional
 
 from bitstring import Bits
-from coincurve import PrivateKey
+from coincurve import PrivateKey, PublicKey
 from ecdsa import SECP256k1, VerifyingKey
 from ecdsa.util import sigdecode_string
 
@@ -26,17 +26,22 @@ class Signature:
         return cls(signing_data=signing_data.tobytes(), signature_data=signature_data)
 
     def verify(self, payee: str) -> bool:
+        if not self.signature_data:
+            raise ValueError("No signature data")
+        # key = PublicKey(bytes.fromhex(payee))
+        # return key.verify(self.signature_data, self.signing_data)
         key = VerifyingKey.from_string(bytes.fromhex(payee), curve=SECP256k1)
         return key.verify(
             self.sig, self.signing_data, sha256, sigdecode=sigdecode_string
         )
 
     def recover_public_key(self) -> str:
-        keys = VerifyingKey.from_public_key_recovery(
-            self.sig, self.signing_data, SECP256k1, sha256
+        if not self.signature_data:
+            raise ValueError("No signature data")
+        key = PublicKey.from_signature_and_message(
+            self.signature_data, self.signing_data
         )
-        key = keys[self.recovery_flag]
-        return key.to_string("compressed").hex()
+        return key.format(compressed=True).hex()
 
     @property
     def r(self) -> str:
