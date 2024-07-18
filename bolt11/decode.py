@@ -142,7 +142,8 @@ def decode(
 
     signature = Signature(
         signature_data=signature_data,
-        signing_data=hrp.encode() + data_part.tobytes(),
+        signing_data=data_part.tobytes(),
+        hrp=hrp,
     )
 
     # A reader MUST check that the `signature` is valid (see the `n` tagged field

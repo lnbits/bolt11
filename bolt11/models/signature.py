@@ -1,46 +1,50 @@
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Optional
 
-from bitstring import Bits
 from coincurve import PrivateKey, PublicKey
-from ecdsa import SECP256k1, VerifyingKey
-from ecdsa.util import sigdecode_string
 
 
 @dataclass
 class Signature:
     """An invoice signature."""
 
+    hrp: str
     signing_data: bytes
-    signature_data: Optional[bytes] = None
+    signature_data: bytes
+
+    @classmethod
+    def from_signature_data(cls, hrp: str, signature_data: bytes, signing_data: bytes) -> "Signature":
+        return cls(hrp=hrp, signature_data=signature_data, signing_data=signing_data)
 
     @classmethod
     def from_private_key(
-        cls, private_key: str, hrp: str, signing_data: Bits
+        cls, hrp: str, private_key: str, signing_data: bytes
     ) -> "Signature":
-        key: PrivateKey = PrivateKey.from_hex(private_key)
-        signature_data = key.sign_recoverable(
-            bytearray([ord(c) for c in hrp]) + signing_data.tobytes()
-        )
-        return cls(signing_data=signing_data.tobytes(), signature_data=signature_data)
+        key = PrivateKey.from_hex(private_key)
+        message = bytearray([ord(c) for c in hrp]) + signing_data
+        signature_data = key.sign_recoverable(message)
+        return cls(hrp=hrp, signing_data=signing_data, signature_data=signature_data)
 
     def verify(self, payee: str) -> bool:
         if not self.signature_data:
             raise ValueError("No signature data")
-        # key = PublicKey(bytes.fromhex(payee))
-        # return key.verify(self.signature_data, self.signing_data)
-        key = VerifyingKey.from_string(bytes.fromhex(payee), curve=SECP256k1)
-        return key.verify(
-            self.sig, self.signing_data, sha256, sigdecode=sigdecode_string
-        )
+        # TODO: couldnt make it work with PublicKey.verify :( without recovering
+        if payee != self.recover_public_key():
+            raise ValueError("Verifying payee public_key failed.")
+        # pubkey = PublicKey( bytes.fromhex(payee))
+        # message = bytearray([ord(c) for c in self.hrp]) + self.signing_data
+        # pubkey.verify(self.signature_data, message)
+        return True
+
 
     def recover_public_key(self) -> str:
         if not self.signature_data:
             raise ValueError("No signature data")
-        key = PublicKey.from_signature_and_message(
-            self.signature_data, self.signing_data
-        )
+        if not self.signing_data:
+            raise ValueError("No signing data")
+
+        message = bytearray([ord(c) for c in self.hrp]) + self.signing_data
+        key = PublicKey.from_signature_and_message(self.signature_data, message)
         return key.format(compressed=True).hex()
 
     @property
