@@ -93,7 +93,9 @@ def encode(
     data_part = timestamp + tags
 
     if private_key:
-        invoice.signature = Signature.from_private_key(hrp=hrp, private_key=private_key, signing_data=data_part.tobytes())
+        invoice.signature = Signature.from_private_key(
+            hrp=hrp, private_key=private_key, signing_data=data_part.tobytes()
+        )
 
     if not invoice.signature:
         raise Bolt11NoSignatureException()

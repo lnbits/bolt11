@@ -13,7 +13,9 @@ class Signature:
     signature_data: bytes
 
     @classmethod
-    def from_signature_data(cls, hrp: str, signature_data: bytes, signing_data: bytes) -> "Signature":
+    def from_signature_data(
+        cls, hrp: str, signature_data: bytes, signing_data: bytes
+    ) -> "Signature":
         return cls(hrp=hrp, signature_data=signature_data, signing_data=signing_data)
 
     @classmethod
@@ -35,7 +37,6 @@ class Signature:
         # message = bytearray([ord(c) for c in self.hrp]) + self.signing_data
         # pubkey.verify(self.signature_data, message)
         return True
-
 
     def recover_public_key(self) -> str:
         if not self.signature_data:
