@@ -2,10 +2,12 @@ from dataclasses import dataclass
 from hashlib import sha256
 
 from coincurve import PrivateKey, PublicKey, verify_signature
-from coincurve.ecdsa import deserialize_recoverable, recoverable_convert, cdata_to_der
+from coincurve.ecdsa import cdata_to_der, deserialize_recoverable, recoverable_convert
+
 
 def message(hrp: str, signing_data: bytes) -> bytes:
     return bytearray([ord(c) for c in hrp]) + signing_data
+
 
 @dataclass
 class Signature:
@@ -37,7 +39,9 @@ class Signature:
         sig = deserialize_recoverable(self.signature_data)
         sig = recoverable_convert(sig)
         sig = cdata_to_der(sig)
-        if not verify_signature(sig, message(self.hrp, self.signing_data), bytes.fromhex(payee)):
+        if not verify_signature(
+            sig, message(self.hrp, self.signing_data), bytes.fromhex(payee)
+        ):
             raise ValueError("Invalid signature")
         return True
 
