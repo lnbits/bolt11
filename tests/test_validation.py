@@ -9,6 +9,7 @@ from bolt11.exceptions import (
     Bolt11NoMinFinalCltvException,
     Bolt11NoPaymentHashException,
     Bolt11NoPaymentSecretException,
+    Bolt11SignatureVerifyException,
 )
 
 ex = {
@@ -178,3 +179,25 @@ class TestBolt11Validation:
 
         with pytest.raises(Bolt11NoMinFinalCltvException):
             decode(bolt11, strict=True)
+
+    def test_validate_signature_verification(self):
+        invoice = Bolt11(
+            currency=ex["currency"],
+            amount_msat=ex["amount_msat"],
+            date=ex["date"],
+            tags=Tags.from_dict(
+                {
+                    "p": ex["payment_hash"],
+                    "s": ex["payment_secret"],
+                    "h": ex["description_hash"],
+                    # invalid pubkey
+                    "n": (
+                        "03b1c1a3dd064c7b4386b688c1f0950fddb28"
+                        "f61f2c3be8bcaf4ef3c78429ffe4e"
+                    ),
+                }
+            ),
+        )
+        bolt11 = encode(invoice, ex["private_key"], keep_payee=True)
+        with pytest.raises(Bolt11SignatureVerifyException):
+            decode(bolt11)

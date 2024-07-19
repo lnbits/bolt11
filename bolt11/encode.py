@@ -54,6 +54,7 @@ def encode(
     private_key: Optional[str] = None,
     ignore_exceptions: bool = False,
     strict: bool = False,
+    keep_payee: bool = False,
 ) -> str:
     try:
         if invoice.description_hash:
@@ -75,10 +76,8 @@ def encode(
             tags += _tagged_bytes(tag.bech32, bytes.fromhex(tag.data))
         elif tag.char == TagChar.metadata:
             tags += _tagged_bytes(tag.bech32, bytes.fromhex(tag.data))
-        # TODO: why uncommented?
-        # payee is not needed, needs more research
-        # elif tag.char == TagChar.payee:
-        #     tags += _tagged_bytes(tag.bech32, bytes.fromhex(tag.data))
+        elif tag.char == TagChar.payee and keep_payee:
+            tags += _tagged_bytes(tag.bech32, bytes.fromhex(tag.data))
         elif tag.char == TagChar.features:
             tags += _tagged_bytes(tag.bech32, tag.data.data)
         elif tag.char == TagChar.fallback:
@@ -94,7 +93,9 @@ def encode(
     data_part = timestamp + tags
 
     if private_key:
-        invoice.signature = Signature.from_private_key(private_key, hrp, data_part)
+        invoice.signature = Signature.from_private_key(
+            hrp=hrp, private_key=private_key, signing_data=data_part.tobytes()
+        )
 
     if not invoice.signature:
         raise Bolt11NoSignatureException()

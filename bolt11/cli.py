@@ -1,4 +1,4 @@
-""" bolt11 CLI """
+"""bolt11 CLI"""
 
 import json
 import sys
@@ -52,10 +52,12 @@ def decode(bolt11, ignore_exceptions, strict):
 @click.argument("private_key", type=str, default=None, required=False)
 @click.argument("ignore_exceptions", type=bool, default=True)
 @click.argument("strict", type=bool, default=False)
+@click.argument("keep_payee", type=bool, default=False)
 def encode(
     json_string,
     ignore_exceptions: bool = True,
     strict: bool = False,
+    keep_payee: bool = False,
     private_key: Optional[str] = None,
 ):
     """
@@ -92,6 +94,7 @@ def encode(
             private_key,
             ignore_exceptions=ignore_exceptions,
             strict=strict,
+            keep_payee=keep_payee,
         )
         click.echo(encoded)
     except Bolt11Exception as exc:

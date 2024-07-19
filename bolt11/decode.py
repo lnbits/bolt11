@@ -53,6 +53,7 @@ def decode(
     timestamp = data_part.read(35).uint
 
     tags = Tags()
+    payee = None
 
     while data_part.pos != data_part.len:
         tag, tagdata, data_part = _pull_tagged(data_part)
@@ -60,6 +61,7 @@ def decode(
 
         # MUST skip over unknown fields, OR an f field with unknown version, OR p, h,
         # s or n fields that do NOT have data_lengths of 52, 52, 52 or 53, respectively.
+
         if (
             tag == TagChar.payment_hash.value
             and data_length == 52
@@ -93,9 +95,10 @@ def decode(
             and data_length == 53
             and not tags.has(TagChar.payee)
         ):
+            payee = trim_to_bytes(tagdata).hex()
             tags.add(
                 TagChar.payee,
-                trim_to_bytes(tagdata).hex(),
+                payee,
             )
         elif (
             tag == TagChar.description.value
@@ -133,19 +136,22 @@ def decode(
         elif tag == TagChar.route_hint.value:
             tags.add(TagChar.route_hint, RouteHint.from_bitstring(tagdata))
 
+        else:
+            # skip unknown fields
+            pass
+
     signature = Signature(
         signature_data=signature_data,
-        signing_data=hrp.encode() + data_part.tobytes(),
+        signing_data=data_part.tobytes(),
+        hrp=hrp,
     )
 
     # A reader MUST check that the `signature` is valid (see the `n` tagged field
     # specified below). A reader MUST use the `n` field to validate the signature
     # instead of performing signature recovery if a valid `n` field is provided.
-    payee = tags.get(TagChar.payee)
     if payee:
-        # TODO: research why no test runs this?
         try:
-            signature.verify(payee.data)
+            signature.verify(payee)
         except Exception as exc:
             raise Bolt11SignatureVerifyException() from exc
     else:

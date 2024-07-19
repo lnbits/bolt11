@@ -991,8 +991,6 @@ class TestBolt11:
         )
 
         encoded = encode(invoice, ex["private_key"])
-        print(encoded)
-        print(ex["payment_request"])
         assert encoded == ex["payment_request"].lower()
 
     def test_example_13(self):
@@ -1125,3 +1123,36 @@ class TestBolt11:
         )
         encoded = encode(invoice, ex["private_key"])
         assert encoded == ex["payment_request"]
+
+    def test_example_15(self):
+        """
+        Verify payee signature
+        """
+        ex = {
+            "payment_request": (
+                "lnbc10n1p0v27vqpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqnp4q0n326hr8v9zprg8"
+                "gsvezcch06gfaqqhde2aj730yg0durunfhv66sp5zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg3z"
+                "ygsdqjv3jhxcmjd9c8g6t0dcjctywagxza9lahzzf8yrd4m4dn8lx7q9dtf5896pfx2jc30dv2w8vw38j2kpr7trh"
+                "fuqdkavr2925n2f85g0uzansyy5pusrwansemqp0ux0x3"
+            ),
+            "payment_secret": (
+                "1111111111111111111111111111111111111111111111111111111111111111"
+            ),
+            "description": "description",
+            "payee": (
+                "03e7156ae33b0a208d0744199163177e909e80176e55d97a2f221ede0f934dd9ad"
+            ),
+            "private_key": (
+                "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734"
+            ),
+        }
+
+        decoded = decode(ex["payment_request"])
+        assert decoded.payment_secret == ex["payment_secret"]
+        assert decoded.description == ex["description"]
+        assert decoded.payee == ex["payee"]
+        assert decoded.signature
+        assert decoded.signature.recover_public_key() == ex["payee"]
+
+        re_encoded = encode(decoded, keep_payee=True)
+        assert re_encoded == ex["payment_request"]

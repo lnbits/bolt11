@@ -1,44 +1,60 @@
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Optional
 
-from bitstring import Bits
-from ecdsa import SECP256k1, VerifyingKey
-from ecdsa.util import sigdecode_string
-from secp256k1 import PrivateKey
+from coincurve import PrivateKey, PublicKey, verify_signature
+from coincurve.ecdsa import cdata_to_der, deserialize_recoverable, recoverable_convert
+
+
+def message(hrp: str, signing_data: bytes) -> bytes:
+    return bytearray([ord(c) for c in hrp]) + signing_data
 
 
 @dataclass
 class Signature:
     """An invoice signature."""
 
+    hrp: str
     signing_data: bytes
-    signature_data: Optional[bytes] = None
+    signature_data: bytes
+
+    @classmethod
+    def from_signature_data(
+        cls, hrp: str, signature_data: bytes, signing_data: bytes
+    ) -> "Signature":
+        return cls(hrp=hrp, signature_data=signature_data, signing_data=signing_data)
 
     @classmethod
     def from_private_key(
-        cls, private_key: str, hrp: str, signing_data: Bits
+        cls, hrp: str, private_key: str, signing_data: bytes
     ) -> "Signature":
-        key = PrivateKey(bytes.fromhex(private_key))
-        sig = key.ecdsa_sign_recoverable(
-            bytearray([ord(c) for c in hrp]) + signing_data.tobytes()
-        )
-        sig, recid = key.ecdsa_recoverable_serialize(sig)
-        signature_data = bytes(sig) + bytes([recid])
-        return cls(signing_data=signing_data.tobytes(), signature_data=signature_data)
+        key = PrivateKey.from_hex(private_key)
+        signature_data = key.sign_recoverable(message(hrp, signing_data))
+        return cls(hrp=hrp, signing_data=signing_data, signature_data=signature_data)
 
     def verify(self, payee: str) -> bool:
-        key = VerifyingKey.from_string(bytes.fromhex(payee), curve=SECP256k1)
-        return key.verify(
-            self.sig, self.signing_data, sha256, sigdecode=sigdecode_string
-        )
+        if not self.signature_data:
+            raise ValueError("No signature data")
+        if not self.signing_data:
+            raise ValueError("No signing data")
+        sig = deserialize_recoverable(self.signature_data)
+        sig = recoverable_convert(sig)
+        sig = cdata_to_der(sig)
+        if not verify_signature(
+            sig, message(self.hrp, self.signing_data), bytes.fromhex(payee)
+        ):
+            raise ValueError("Invalid signature")
+        return True
 
     def recover_public_key(self) -> str:
-        keys = VerifyingKey.from_public_key_recovery(
-            self.sig, self.signing_data, SECP256k1, sha256
+        if not self.signature_data:
+            raise ValueError("No signature data")
+        if not self.signing_data:
+            raise ValueError("No signing data")
+
+        key = PublicKey.from_signature_and_message(
+            self.signature_data, message(self.hrp, self.signing_data)
         )
-        key = keys[self.recovery_flag]
-        return key.to_string("compressed").hex()
+        return key.format(compressed=True).hex()
 
     @property
     def r(self) -> str:
