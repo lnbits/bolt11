@@ -51,8 +51,9 @@ class Signature:
         if not self.signing_data:
             raise ValueError("No signing data")
 
-        message = bytearray([ord(c) for c in self.hrp]) + self.signing_data
-        key = PublicKey.from_signature_and_message(self.signature_data, message)
+        key = PublicKey.from_signature_and_message(
+            self.signature_data, message(self.hrp, self.signing_data)
+        )
         return key.format(compressed=True).hex()
 
     @property

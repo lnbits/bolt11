@@ -7,7 +7,7 @@ ex = {
 
 
 class TestBolt11Signature:
-    def test_recovers_public_key(self):
+    def test_signature(self):
         signature = Signature.from_private_key(
             hrp="lnbc1",
             private_key=ex["private_key"],
@@ -15,10 +15,9 @@ class TestBolt11Signature:
         )
         assert signature.recover_public_key() == ex["public_key"]
 
-    def test_signature_verify(self):
-        signature = Signature.from_private_key(
+        signature = Signature.from_signature_data(
             hrp="lnbc1",
-            private_key=ex["private_key"],
             signing_data=b"1234567890",
+            signature_data=signature.signature_data,
         )
         assert signature.verify(ex["public_key"])
