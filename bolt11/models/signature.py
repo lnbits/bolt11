@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 from hashlib import sha256
 
-from coincurve import PrivateKey, PublicKey
+from coincurve import PrivateKey, PublicKey, verify_signature
+from coincurve.ecdsa import deserialize_recoverable, recoverable_convert, cdata_to_der
 
+def message(hrp: str, signing_data: bytes) -> bytes:
+    return bytearray([ord(c) for c in hrp]) + signing_data
 
 @dataclass
 class Signature:
@@ -23,19 +26,19 @@ class Signature:
         cls, hrp: str, private_key: str, signing_data: bytes
     ) -> "Signature":
         key = PrivateKey.from_hex(private_key)
-        message = bytearray([ord(c) for c in hrp]) + signing_data
-        signature_data = key.sign_recoverable(message)
+        signature_data = key.sign_recoverable(message(hrp, signing_data))
         return cls(hrp=hrp, signing_data=signing_data, signature_data=signature_data)
 
     def verify(self, payee: str) -> bool:
         if not self.signature_data:
             raise ValueError("No signature data")
-        # TODO: couldnt make it work with PublicKey.verify :( without recovering
-        if payee != self.recover_public_key():
-            raise ValueError("Verifying payee public_key failed.")
-        # pubkey = PublicKey( bytes.fromhex(payee))
-        # message = bytearray([ord(c) for c in self.hrp]) + self.signing_data
-        # pubkey.verify(self.signature_data, message)
+        if not self.signing_data:
+            raise ValueError("No signing data")
+        sig = deserialize_recoverable(self.signature_data)
+        sig = recoverable_convert(sig)
+        sig = cdata_to_der(sig)
+        if not verify_signature(sig, message(self.hrp, self.signing_data), bytes.fromhex(payee)):
+            raise ValueError("Invalid signature")
         return True
 
     def recover_public_key(self) -> str:
