@@ -6,7 +6,7 @@ from coincurve.ecdsa import cdata_to_der, deserialize_recoverable, recoverable_c
 
 
 def message(hrp: str, signing_data: bytes) -> bytes:
-    return bytearray([ord(c) for c in hrp]) + signing_data
+    return bytes([ord(c) for c in hrp]) + signing_data
 
 
 @dataclass
