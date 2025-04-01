@@ -41,10 +41,10 @@ class RouteHint(NamedTuple):
         for route in self.routes:
             route_hints.append(
                 BitArray(hex=route.public_key)
-                + pack("intbe:64", scid_to_int(route.short_channel_id))
-                + pack("intbe:32", route.base_fee)
-                + pack("intbe:32", route.ppm_fee)
-                + pack("intbe:16", route.cltv_expiry_delta)
+                + pack("uintbe:64", scid_to_int(route.short_channel_id))
+                + pack("uintbe:32", route.base_fee)
+                + pack("uintbe:32", route.ppm_fee)
+                + pack("uintbe:16", route.cltv_expiry_delta)
             )
 
         return route_hints

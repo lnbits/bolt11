@@ -100,3 +100,23 @@ class TestRouteHints:
         check_decoded_routes(decoded.route_hints, ex["route_hints"])
         re_encoded = encode(decoded)
         assert re_encoded == ex["payment_request"]
+
+
+class TestRouteHintsSize:
+    def test_channel_id_size(self):
+        big_channel_id = "16774490x12969991x22027"
+        hints = RouteHint.from_list(
+            [
+                {
+                    "public_key": (
+                        "029e03a901b85534ff1e92c43c74431f7ce72046060fcf7a95c37e148f78c77255"
+                    ),
+                    "short_channel_id": big_channel_id,
+                    "base_fee": 1,
+                    "ppm_fee": 20,
+                    "cltv_expiry_delta": 3,
+                }
+            ]
+        )
+
+        assert hints.data
