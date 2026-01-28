@@ -3,19 +3,19 @@ all: black ruff mypy pyright test
 format: black ruff-fix
 
 black:
-	poetry run black --preview .
+	uv run black --preview .
 
 ruff:
-	poetry run ruff check .
+	uv run ruff check .
 
 ruff-fix:
-	poetry run ruff check . --fix
+	uv run ruff check . --fix
 
 mypy:
-	poetry run mypy .
+	uv run mypy .
 
 pyright:
-	poetry run pyright
+	uv run pyright
 
 test:
-	poetry run pytest
+	uv run pytest

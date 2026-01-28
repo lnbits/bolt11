@@ -1,5 +1,9 @@
 name: mypy
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   checks:
@@ -7,19 +11,19 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10"]
-        poetry-version: ["1.8.5"]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Poetry ${{ matrix.poetry-version }}
-        uses: abatilo/actions-poetry@v2
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v5
         with:
-          poetry-version: ${{ matrix.poetry-version }}
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+          python-version: ${{ inputs.python-version }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: "poetry"
-      - name: Install packages
-        run: poetry install
+          enable-cache: true
+          python-version: ${{ inputs.python-version }}
+      - name: Install the project dependencies
+        shell: bash
+        run: uv sync --locked --all-extras --dev
       - name: Check mypy
         run: make mypy

@@ -40,13 +40,13 @@ and the LNbits bolt11 helpers created by [@fiatjaf][fiatjaf].
 ```console
 $ git clone https://github.com/lnbits/bolt11
 $ cd bolt11
-$ poetry install
+$ uv sync
 ```
 
 ### running CLI
 ```console
-$ poetry run bolt11 --help
-$ poetry run bolt11 decode
+$ uv run bolt11 --help
+$ uv run bolt11 decode
 ```
 
 ### run all checks and tests
@@ -56,18 +56,18 @@ $ make
 
 ### using pre-commit as git hook
 ```console
-$ poetry run pre-commit install
+$ uv run pre-commit install
 ```
 
 
 ### running CLI
 ```console
-$ poetry run bolt11 --help
+$ uv run bolt11 --help
 ```
 
 ### running CLI decode
 ```
-$ poetry run bolt11 decode lnbc20m1pvjluez.....
+$ uv run bolt11 decode lnbc20m1pvjluez.....
 {
   "currency": "bc",
   "amount": 2000000000,
@@ -104,7 +104,7 @@ $ poetry run bolt11 decode lnbc20m1pvjluez.....
 
 ### running CLI encode
 ```
-$ poetry run bolt11 encode '{
+$ uv run bolt11 encode '{
   "currency": "bc",
   "amount_msat": 1000,
   "date": 1590000000,
