@@ -137,7 +137,7 @@ class TestDecodeFeatures:
         )
         assert invoice.features
         assert invoice.features.data.bin == features.data.bin
-        assert not invoice.features.data.len % 5
+        assert not len(invoice.features.data) % 5
         encoded = encode(
             invoice,
             "e126f68f7eafcc8b74f54d269fe206be715000f94dac067d1c04a8ca3b2db734",

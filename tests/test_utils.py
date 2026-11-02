@@ -1,8 +1,9 @@
 from decimal import Decimal
 
 import pytest
+from bitstring import Bits, ReadError
 
-from bolt11.bit_utils import int_to_scid, scid_to_int
+from bolt11.bit_utils import BitReader, int_to_scid, scid_to_int
 from bolt11.compat import shorten_amount, unshorten_amount
 from bolt11.exceptions import Bolt11AmountInvalidException
 from bolt11.utils import amount_to_btc, amount_to_sat, btc_to_amount, sat_to_amount
@@ -18,6 +19,34 @@ class TestScid:
     def test_scid(self, scid, cid):
         assert int_to_scid(cid) == scid
         assert scid_to_int(scid) == cid
+
+
+class TestBitReader:
+    def test_zero_length(self):
+        reader = BitReader(Bits("0b10110"))
+        assert reader.read(0) == Bits()
+        assert reader.pos == 0
+
+    def test_consecutive_reads_to_exact_end(self):
+        reader = BitReader(Bits("0b10110"))
+        assert reader.read(2) == Bits("0b10")
+        assert reader.read(3) == Bits("0b110")
+        assert reader.pos == len(reader) == 5
+        assert reader.read(0) == Bits()
+
+    def test_overrun_leaves_cursor(self):
+        reader = BitReader(Bits("0b10110"))
+        reader.read(2)
+        with pytest.raises(ReadError):
+            reader.read(4)
+        assert reader.pos == 2
+
+    def test_negative_length_leaves_cursor(self):
+        reader = BitReader(Bits("0b10110"))
+        reader.read(2)
+        with pytest.raises(ValueError):
+            reader.read(-1)
+        assert reader.pos == 2
 
 
 class TestAmounts:

@@ -3,9 +3,8 @@ based on https://github.com/rustyrussell/lightning-payencode/blob/master/lnaddr.
 """
 
 from bech32 import CHARSET, bech32_decode
-from bitstring import ConstBitStream
 
-from .bit_utils import trim_to_bytes, u5_to_bitarray
+from .bit_utils import BitReader, trim_to_bytes, u5_to_bitarray
 from .exceptions import (
     Bolt11Bech32InvalidException,
     Bolt11SignatureTooShortException,
@@ -48,14 +47,14 @@ def decode(
     signature_data = data[-65 * 8 :].tobytes()
 
     # the tagged fields as a bitstream
-    data_part = ConstBitStream(data[: -65 * 8])
+    data_part = BitReader(data[: -65 * 8])
 
     timestamp = data_part.read(35).uint
 
     tags = Tags()
     payee = None
 
-    while data_part.pos != data_part.len:
+    while data_part.pos != len(data_part):
         tag, tagdata, data_part = _pull_tagged(data_part)
         data_length = int(len(tagdata or []) / 5)
 
@@ -142,7 +141,7 @@ def decode(
 
     signature = Signature(
         signature_data=signature_data,
-        signing_data=data_part.tobytes(),
+        signing_data=data_part.bits.tobytes(),
         hrp=hrp,
     )
 
