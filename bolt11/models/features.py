@@ -57,9 +57,9 @@ class Features(NamedTuple):
 
     @classmethod
     def from_bitstring(cls, data: Bits) -> "Features":
-        while data.len % 5 != 0:
+        while len(data) % 5 != 0:
             data = data + "0b0"
-        length = data.length
+        length = len(data)
         feature_list: Dict[Union[Feature, FeatureExtra], FeatureState] = {}
         for i in range(0, length):
             feature_index = floor(i / 2)
@@ -81,7 +81,7 @@ class Features(NamedTuple):
         cls, feature_list: Dict[Union[Feature, FeatureExtra], FeatureState]
     ) -> "Features":
         length = max([feature.value + 1 for feature in feature_list]) * 2
-        data = BitArray(length=length)
+        data = BitArray(uint=0, length=length)
         for feature, feature_state in feature_list.items():
             if feature_state == FeatureState.required:
                 data.invert(feature.value * 2)
@@ -93,7 +93,7 @@ class Features(NamedTuple):
         while data[-1:] == "0b0":
             data = BitArray(data[:-1])
         # add zeroes
-        while data.len % 5 != 0:
+        while len(data) % 5 != 0:
             data = data + "0b0"
         data.reverse()
         return cls(data, feature_list)

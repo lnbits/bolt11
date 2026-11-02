@@ -17,14 +17,14 @@ from .utils import msat_to_amount
 # Tagged field containing BitArray
 def _tagged(char: int, bits: Bits):
     # Tagged fields need to be zero-padded to 5 bits.
-    while bits.len % 5 != 0:
+    while len(bits) % 5 != 0:
         bits = bits + "0b0"
     return (
         pack(
             "uint:5, uint:5, uint:5",
             char,
-            (bits.len / 5) / 32,
-            (bits.len / 5) % 32,
+            len(bits) // 5 // 32,
+            len(bits) // 5 % 32,
         )
         + bits
     )

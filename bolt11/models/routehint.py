@@ -1,8 +1,8 @@
 from typing import List, NamedTuple
 
-from bitstring import BitArray, Bits, ConstBitStream, pack
+from bitstring import BitArray, Bits, pack
 
-from ..bit_utils import int_to_scid, scid_to_int
+from ..bit_utils import BitReader, int_to_scid, scid_to_int
 
 
 class Route(NamedTuple):
@@ -18,9 +18,9 @@ class RouteHint(NamedTuple):
 
     @classmethod
     def from_bitstring(cls, data: Bits) -> "RouteHint":
-        stream = ConstBitStream(data)
+        stream = BitReader(data)
         route_hints = []
-        while stream.pos + 264 + 64 + 32 + 32 + 16 < stream.len:
+        while stream.pos + 264 + 64 + 32 + 32 + 16 < len(stream):
             route = Route(
                 public_key=stream.read(264).tobytes().hex(),
                 short_channel_id=int_to_scid(stream.read(64).intbe),
